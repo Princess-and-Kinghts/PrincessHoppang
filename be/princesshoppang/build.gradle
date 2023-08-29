@@ -33,11 +33,9 @@ dependencies {
 	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
-	// Spring Data Redis
+	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-
-	// Jedis (Redis Java client)
-	implementation 'redis.clients:jedis:3.6.1'
+	implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
 }
 
 tasks.named('test') {
