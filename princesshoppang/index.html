@@ -3,11 +3,41 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+
+    <!-- PWA - favicon -->
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="msapplication-TileColor" content="#eab308" />
+    <meta name="theme-color" content="#eab308" />
+    <!-- favicon -->
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <title>Vite + React + TS + PWA</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+		  <!-- PWA  -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        // Register a service worker hosted at the root of the
+        // site using the default scope.
+        navigator.serviceWorker
+          .register("/sw.js")
+          .then((registration) => {
+            console.log("Service worker registration succeeded:", registration);
+          })
+          .catch((err) => {
+            console.log("Service worker registration failed:", error);
+          });
+      } else {
+        console.log("Service workers are not supported.");
+      }
+    </script>
+		  <!-- PWA -->
   </body>
 </html>
