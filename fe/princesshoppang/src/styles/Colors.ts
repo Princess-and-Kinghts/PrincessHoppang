@@ -1,4 +1,4 @@
-const colors = {
+const Colors = {
   white: "#FFFFFF",
   black: "#000000",
   gray: "#888888",
@@ -40,4 +40,4 @@ const colors = {
   },
 };
 
-export default colors;
+export default Colors;

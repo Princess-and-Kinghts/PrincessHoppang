@@ -1,4 +1,4 @@
-const font = {
+const Fonts = {
   fontsize: {
     // 모바일 기준
     // 20px : 제목
@@ -14,4 +14,4 @@ const font = {
   },
 };
 
-export default font;
+export default Fonts;
