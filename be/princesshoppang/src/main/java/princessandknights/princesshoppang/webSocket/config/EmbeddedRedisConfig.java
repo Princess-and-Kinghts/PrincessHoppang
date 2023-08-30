@@ -1,4 +1,4 @@
-package princessandknights.princesshoppang.webSocket;
+package princessandknights.princesshoppang.webSocket.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
