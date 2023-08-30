@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import Colors from "../styles/Colors";
-// import Button from "../components/Button";
 import logoImage from "../assets/pc.png";
+import { Link } from "react-router-dom";
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -40,7 +40,7 @@ const Logo = styled.img`
 const Nav = styled.nav`
   ul {
     display: flex;
-    gap: 20px;
+    gap: 30px;
     min-width: 200px;
 
     li {
@@ -130,24 +130,28 @@ const Header = () => {
   return (
     <HeaderContainer>
       <MobileMenu></MobileMenu>
-      <Logo src={logoImage} alt="로고"></Logo>
+      <Link to="/">
+        <Logo src={logoImage} alt="로고"></Logo>
+      </Link>
       <Nav>
         <ul>
           <li>
-            <a href="#">홈</a>
+            <Link to="/">홈</Link>
           </li>
           <li>
-            <a href="#">채팅</a>
+            <Link to="/chat">채팅</Link>
           </li>
           <li>
-            <a href="#">MBTI톡</a>
+            <Link to="/community">MBTI톡</Link>
           </li>
         </ul>
       </Nav>
       <Seperater></Seperater>
       <TempSearchBar></TempSearchBar>
       <Seperater2></Seperater2>
-      <TempProfile></TempProfile>
+      <Link to="/mypage">
+        <TempProfile></TempProfile>
+      </Link>
       <TempMoblieProfile></TempMoblieProfile>
     </HeaderContainer>
   );
