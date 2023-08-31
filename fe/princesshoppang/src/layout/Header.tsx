@@ -1,9 +1,9 @@
-import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 import Colors from "../styles/Colors";
 import logoImage from "../assets/pc.png";
 import { Link } from "react-router-dom";
 
-const HeaderContainer = styled.header`
+const headerContainer = css`
   display: flex;
   align-items: center;
   box-sizing: border-box;
@@ -16,7 +16,7 @@ const HeaderContainer = styled.header`
   color: white;
 `;
 
-const MobileMenu = styled.div`
+const mobileMenu = css`
   display: none;
 
   @media (max-width: 768px) {
@@ -32,13 +32,13 @@ const MobileMenu = styled.div`
   }
 `;
 
-const Logo = styled.img`
+const logo = css`
   width: 60px;
   height: auto;
   margin: 10px;
 `;
 
-const Nav = styled.nav`
+const nav = css`
   ul {
     display: flex;
     gap: 30px;
@@ -61,7 +61,7 @@ const Nav = styled.nav`
   }
 `;
 
-const Seperater = styled.div`
+const seperater = css`
   flex: 1;
   margin: 10px;
 
@@ -70,7 +70,7 @@ const Seperater = styled.div`
   }
 `;
 
-const TempSearchBar = styled.div`
+const tempSearchBar = css`
   display: flex;
   align-items: center;
   border: 1px solid #ccc;
@@ -86,7 +86,7 @@ const TempSearchBar = styled.div`
   }
 `;
 
-const Seperater2 = styled.div`
+const seperater2 = css`
   flex: 0.2;
   margin: 10px;
 
@@ -95,7 +95,7 @@ const Seperater2 = styled.div`
   }
 `;
 
-const TempProfile = styled.div`
+const tempProfile = css`
   display: flex;
   align-items: center;
   border: 1px solid #ccc;
@@ -111,7 +111,7 @@ const TempProfile = styled.div`
   }
 `;
 
-const TempMoblieProfile = styled.div`
+const tempMoblieProfile = css`
   display: none;
 
   @media (max-width: 768px) {
@@ -129,12 +129,12 @@ const TempMoblieProfile = styled.div`
 
 const Header = () => {
   return (
-    <HeaderContainer>
-      <MobileMenu></MobileMenu>
+    <header css={headerContainer}>
+      <div css={mobileMenu}></div>
       <Link to="/">
-        <Logo src={logoImage} alt="로고"></Logo>
+        <img css={logo} src={logoImage} alt="로고"></img>
       </Link>
-      <Nav>
+      <nav css={nav}>
         <ul>
           <li>
             <Link to="/">홈</Link>
@@ -146,15 +146,15 @@ const Header = () => {
             <Link to="/community">MBTI톡</Link>
           </li>
         </ul>
-      </Nav>
-      <Seperater></Seperater>
-      <TempSearchBar></TempSearchBar>
-      <Seperater2></Seperater2>
+      </nav>
+      <div css={seperater}></div>
+      <div css={tempSearchBar}></div>
+      <div css={seperater2}></div>
       <Link to="/mypage">
-        <TempProfile></TempProfile>
+        <div css={tempProfile}></div>
       </Link>
-      <TempMoblieProfile></TempMoblieProfile>
-    </HeaderContainer>
+      <div css={tempMoblieProfile}></div>
+    </header>
   );
 };
 

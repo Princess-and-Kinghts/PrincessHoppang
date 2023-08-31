@@ -1,9 +1,5 @@
 const Community = () => {
-  return (
-    <div>
-      <h1>Community</h1>
-    </div>
-  );
+  return <h1>Community</h1>;
 };
 
 export default Community;
