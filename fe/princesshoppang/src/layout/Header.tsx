@@ -6,11 +6,12 @@ import { Link } from "react-router-dom";
 const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
+  box-sizing: border-box;
   display: flex;
-  align-items: center;
   justify-content: space-between;
   width: 100%;
   height: 100px;
+  padding: 0px 10px;
   background-color: ${Colors.white};
   color: white;
 `;
