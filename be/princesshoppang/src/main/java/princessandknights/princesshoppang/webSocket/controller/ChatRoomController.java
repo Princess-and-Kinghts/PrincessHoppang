@@ -1,20 +1,16 @@
 package princessandknights.princesshoppang.webSocket.controller;
 
 import java.util.List;
+import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
 import princessandknights.princesshoppang.webSocket.model.Response;
@@ -23,6 +19,7 @@ import princessandknights.princesshoppang.webSocket.model.StatusCode;
 import princessandknights.princesshoppang.webSocket.model.ChatRoom;
 import princessandknights.princesshoppang.webSocket.repository.ChatRoomRepository;
 
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 @CrossOrigin(origins="*")
@@ -46,14 +43,21 @@ public class ChatRoomController {
     // 그룹채팅 생성
     @PostMapping("/room")
     @ResponseBody
-    public ChatRoom createRoom(@RequestParam String name) {
+    public ChatRoom createRoom(String name) {
         return chatRoomRepository.createChatRoom(name);
     }
+//    @PostMapping("/room")
+//    @ResponseBody
+//    public ChatRoom createRoom(@RequestBody Map<String, String> requestData) {
+//        String name = requestData.get("name");
+//        return chatRoomRepository.createChatRoom(name);
+//    }
 
     // 해당 그룹채팅방 ID로 접근하여 채팅방 선택
     @GetMapping("/room/{roomId}")
     @ResponseBody
     public ChatRoom roomInfo(@PathVariable String roomId) {
+        log.info("roomId: " + roomId);
         return chatRoomRepository.findRoomById(roomId);
     }
 
@@ -64,12 +68,12 @@ public class ChatRoomController {
         return "/chat/roomdetail";
     }
 
-    @GetMapping("/user")
-    @ResponseBody
-    public String getUserInfo() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String name = auth.getName();
-        return name;
-    }
+//    @GetMapping("/user")
+//    @ResponseBody
+//    public String getUserInfo() {
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        String name = auth.getName();
+//        return name;
+//    }
 
 }

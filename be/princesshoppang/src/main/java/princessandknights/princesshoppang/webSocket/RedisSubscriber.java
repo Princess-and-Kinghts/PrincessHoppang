@@ -1,12 +1,11 @@
 package princessandknights.princesshoppang.webSocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import princessandknights.princesshoppang.webSocket.model.ChatMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import princessandknights.princesshoppang.webSocket.model.ChatMessage;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class RedisSubscriber {
 
     private final ObjectMapper objectMapper;
+
     private final SimpMessageSendingOperations messagingTemplate;
 
     /**

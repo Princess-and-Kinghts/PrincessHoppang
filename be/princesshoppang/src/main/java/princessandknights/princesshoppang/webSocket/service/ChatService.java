@@ -1,5 +1,6 @@
 package princessandknights.princesshoppang.webSocket.service;
 
+import lombok.extern.slf4j.Slf4j;
 import princessandknights.princesshoppang.webSocket.model.ChatMessage;
 import princessandknights.princesshoppang.webSocket.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ChatService {
@@ -32,14 +34,17 @@ public class ChatService {
      */
     public void sendChatMessage(ChatMessage chatMessage) {
         chatMessage.setUserCount(chatRoomRepository.getUserCount(chatMessage.getRoomId()));
+        log.info("sendChatMessage {}", chatMessage);
+        log.info("sender {}", chatMessage.getSender());
         if (ChatMessage.MessageType.ENTER.equals(chatMessage.getType())) {
             chatMessage.setMessage(chatMessage.getSender() + "가 방에 입장했습니다.");
             chatMessage.setSender("[알림]");
         } else if (ChatMessage.MessageType.QUIT.equals(chatMessage.getType())) {
             chatMessage.setMessage(chatMessage.getSender() + "가 방에서 나갔습니다.");
             chatMessage.setSender("[알림]");
-        }
+        } 
         redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage);
+        log.info("channelTopic {}", channelTopic.getTopic());
     }
 
 }
