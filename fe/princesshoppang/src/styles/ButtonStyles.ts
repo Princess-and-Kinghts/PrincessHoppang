@@ -15,6 +15,14 @@ export const buttonStyles = {
     font-weight: bold;
     cursor: pointer;
     text-align: center;
+    transition:
+      background-color 0.2s ease,
+      color 0.1s ease;
+
+    &:hover {
+      background-color: ${Colors.red.origin};
+      color: ${Colors.white};
+    }
 
     // 앱
     @media (max-width: 767px) {
@@ -27,14 +35,24 @@ export const buttonStyles = {
   pill: css`
     width: 68px;
     height: 29px;
-    margin: 15px;
+    margin-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     border: none;
     border-radius: 20px;
-    background-color: ${Colors.navy.origin};
-    font-size: ${Fonts.fontsize.h4};
+    background-color: ${Colors.lightgray};
+    font-size: ${Fonts.fontsize.h3};
     font-weight: bold;
     cursor: pointer;
     text-align: center;
+    transition:
+      background-color 0.2s ease,
+      color 0.1s ease;
+
+    &:hover {
+      background-color: ${Colors.navy.origin};
+      color: ${Colors.white};
+    }
   `,
 };
 

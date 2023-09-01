@@ -3,6 +3,39 @@ import Colors from "../styles/Colors";
 import logoImage from "../assets/pc.png";
 import { Link } from "react-router-dom";
 
+const Header = () => {
+  return (
+    <header css={headerContainer}>
+      <div css={mobileMenu}></div>
+      <Link to="/">
+        <img css={logo} src={logoImage} alt="로고"></img>
+      </Link>
+      <nav css={nav}>
+        <ul>
+          <li>
+            <Link to="/">홈</Link>
+          </li>
+          <li>
+            <Link to="chat">채팅</Link>
+          </li>
+          <li>
+            <Link to="community">MBTI톡</Link>
+          </li>
+        </ul>
+      </nav>
+      <div css={seperater}></div>
+      <div css={tempSearchBar}></div>
+      <div css={seperater2}></div>
+      <Link to="mypage">
+        <div css={tempProfile}></div>
+      </Link>
+      <div css={tempMoblieProfile}></div>
+    </header>
+  );
+};
+
+export default Header;
+
 const headerContainer = css`
   display: flex;
   align-items: center;
@@ -126,36 +159,3 @@ const tempMoblieProfile = css`
     height: 50px;
   }
 `;
-
-const Header = () => {
-  return (
-    <header css={headerContainer}>
-      <div css={mobileMenu}></div>
-      <Link to="/">
-        <img css={logo} src={logoImage} alt="로고"></img>
-      </Link>
-      <nav css={nav}>
-        <ul>
-          <li>
-            <Link to="/">홈</Link>
-          </li>
-          <li>
-            <Link to="/chat">채팅</Link>
-          </li>
-          <li>
-            <Link to="/community">MBTI톡</Link>
-          </li>
-        </ul>
-      </nav>
-      <div css={seperater}></div>
-      <div css={tempSearchBar}></div>
-      <div css={seperater2}></div>
-      <Link to="/mypage">
-        <div css={tempProfile}></div>
-      </Link>
-      <div css={tempMoblieProfile}></div>
-    </header>
-  );
-};
-
-export default Header;

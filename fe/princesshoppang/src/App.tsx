@@ -5,10 +5,13 @@ import Game from "./pages/GamePage/Game";
 import Chat from "./pages/ChatPage/Chat";
 import Community from "./pages/CommunityPage/Community";
 import Profile from "./pages/MyPage/Profile";
+import GlobalStyles from "./layout/GlobalLayout.tsx";
+import PostDetail from "./pages/CommunityPage/PostDetail.tsx";
 
 function App() {
   return (
     <BrowserRouter>
+      <GlobalStyles />
       <div className="App">
         <Header />
         <Routes>
@@ -16,6 +19,7 @@ function App() {
           <Route path="/game" element={<Game />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/community/post/:id" element={<PostDetail />} />
           <Route path="/mypage" element={<Profile />} />
         </Routes>
       </div>

@@ -3,16 +3,17 @@ import backgroundImage from "../assets/background.png";
 
 const GlobalStyles = css`
   body {
+    height: 100vh;
     margin: 0px;
     padding: 0px;
     background: url(${backgroundImage}) center/cover no-repeat;
-    height: 100vh;
+    background-attachment: fixed;
     position: relative;
   }
 
   body::before {
     content: "";
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
