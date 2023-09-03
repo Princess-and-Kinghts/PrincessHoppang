@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+//	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	compileOnly 'org.projectlombok:lombok'
@@ -31,19 +31,26 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
-	testImplementation 'org.springframework.security:spring-security-test'
+//	testImplementation 'org.springframework.security:spring-security-test'
 
-// jpa
+	// jpa
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-	// redis
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
-//	implementation 'it.ozimov:embedded-redis:0.7.2'
+	// webSocket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
-	// @PostConstruct & @PreDestroy 사용을 위한 종속성 추가
-	// https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api
-	implementation group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
+	// rabbitMQ
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	implementation 'org.springframework.boot:spring-boot-starter-reactor-netty'
+
+//	// redis
+//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+//	implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
+////	implementation 'it.ozimov:embedded-redis:0.7.2'
+//
+//	// @PostConstruct & @PreDestroy 사용을 위한 종속성 추가
+//	// https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api
+//	implementation group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
 
 }
 
