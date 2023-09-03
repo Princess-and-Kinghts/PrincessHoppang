@@ -12,18 +12,24 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@stomp/stompjs": "^7.0.0",
+    "@types/stompjs": "^2.3.5",
+    "@vitejs/plugin-react-refresh": "^1.3.6",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "jotai": "^2.4.0",
     "prettier": "^3.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.15.0"
+    "react-router-dom": "^6.15.0",
+    "stompjs": "^2.3.3",
+    "ws": "^8.13.0"
   },
   "devDependencies": {
     "@emotion/babel-plugin": "^11.11.0",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
+    "@types/sockjs-client": "^1.5.1",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react-swc": "^3.3.2",
