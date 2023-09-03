@@ -25,6 +25,10 @@ public class GameMessageController {
     public void startGame(@Payload Message message, SimpMessageHeaderAccessor headerAccessor) {
         log.info("newUser에서 찍히는 로그 {}", message.getChannelId());
         headerAccessor.getSessionAttributes().put("username", message.getSender());
+        if (message.getType() == "match") {
+
+        }
+
         messageSendingOperations.convertAndSend("/topic/" + message.getChannelId(), message);
     }
 }
