@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 import Fonts from "../../styles/Fonts";
 import Colors from "../../styles/Colors";
-import { containerStyles, categoryTitleStyles } from "../../styles/PageStyles";
+import { containerStyle, categoryTitleStyle } from "../../styles/PageStyles";
 
 import Button from "../../components/Button";
 import WriteIconImg from "../../assets/WriteIcon.png";
@@ -36,7 +36,8 @@ const dummyData = [
     mbtiType: "ENTP",
     mbti: "ENTJ",
     date: "23.08.27",
-    title: "대충 ENTP에게 시비거는중",
+    title:
+      "대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중대충 ENTP에게 시비거는중",
     views: 121,
     emotions: 3,
     comments: 4,
@@ -118,14 +119,14 @@ const Community = () => {
   };
 
   return (
-    <div css={containerStyles}>
-      <div css={categoryTitleStyles}>MBTI톡</div>
+    <div css={containerStyle}>
+      <div css={categoryTitleStyle}>MBTI톡</div>
       <div>
         <Button type="pill">New</Button>
         <Button type="pill">Hot</Button>
       </div>
-      <div css={menuContainerStyles}>
-        <div css={mbtiContainerStyles}>
+      <div css={menuContainerStyle}>
+        <div css={mbtiContainerStyle}>
           <div>
             {mbtiMenuTypes.map((item, idx) => (
               <Button type="pill" key={idx}>
@@ -134,27 +135,27 @@ const Community = () => {
             ))}
           </div>
         </div>
-        <div css={writeBtnContainerStyles}>
-          <button css={writeBtnStyles}>
+        <div css={writeBtnContainerStyle}>
+          <button css={writeBtnStyle}>
             <img src={WriteIconImg} alt="Write" />
           </button>
         </div>
       </div>
-      <div css={postContainerStyles}>
+      <div css={postContainerStyle}>
         {dummyData.map((post) => (
           <div
             key={post.id}
-            css={postStyles}
+            css={postStyle}
             onClick={() => toPostDetail(post.id)}
           >
             <div css={textContainer}>
-              <div css={upTitleStyles}>
+              <div css={upTitleStyle}>
                 <span css={{ fontWeight: "bold" }}>{post.mbtiType} · </span>
                 <span css={{ color: Colors.gray }}>익명의 {post.mbti} · </span>
                 <span css={{ color: Colors.gray }}>{post.date}</span>
               </div>
-              <div css={titleStyles}>{post.title}</div>
-              <div css={valueStyles}>
+              <div css={titleStyle}>{post.title}</div>
+              <div css={valueStyle}>
                 <img src={ViewIconImg} alt="view" />
                 <span>{post.views}</span>
                 <img src={EmotionIconImg} alt="emotion" />
@@ -177,13 +178,13 @@ const Community = () => {
 
 export default Community;
 
-const menuContainerStyles = css`
+const menuContainerStyle = css`
   display: flex;
   justify-content: space-between;
   margin-bottom: 40px;
 `;
 
-const mbtiContainerStyles = css`
+const mbtiContainerStyle = css`
   max-width: 700px;
   min-width: 350px;
 
@@ -192,12 +193,12 @@ const mbtiContainerStyles = css`
   }
 `;
 
-const writeBtnContainerStyles = css`
+const writeBtnContainerStyle = css`
   display: flex;
   align-items: flex-end;
 `;
 
-const writeBtnStyles = css`
+const writeBtnStyle = css`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -227,13 +228,13 @@ const writeBtnStyles = css`
   }
 `;
 
-const postContainerStyles = css`
+const postContainerStyle = css`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
 `;
 
-const postStyles = css`
+const postStyle = css`
   display: flex;
   flex-direction: row;
   width: 100vw;
@@ -251,19 +252,25 @@ const postStyles = css`
 
 const textContainer = css`
   flex: 4;
+  max-width: 400px;
+  @media (max-width: 768px) {
+    max-width: 200px;
+  }
 `;
 
-const upTitleStyles = css`
+const upTitleStyle = css`
   margin-bottom: 10px;
 `;
 
-const titleStyles = css`
+const titleStyle = css`
   margin-bottom: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
-const valueStyles = css`
+const valueStyle = css`
   display: flex;
-  justify-contents: center;
   align-items: center;
   color: ${Colors.gray};
 
