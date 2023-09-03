@@ -24,5 +24,8 @@ public class ChattingMessageController {
     public void sendDm(@Payload Message message, SimpMessageHeaderAccessor headerAccessor) {
         headerAccessor.getSessionAttributes().put("username", message.getSender());
         messageSendingOperations.convertAndSend("/topic/" + message.getChannelId(), message);
+
+        // db에 저장하는 로직 필요
+
     }
 }
