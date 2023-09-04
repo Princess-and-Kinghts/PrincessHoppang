@@ -16,7 +16,7 @@ FROM nginx
 
 # RUN mkdir /react-vite-app
 
-WORKDIR /react-vite-app
+WORKDIR /princesshoppang-front
 
 RUN mkdir ./dist
 
