@@ -1,5 +1,6 @@
 import { css } from "@emotion/react";
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 
 // import { useParams } from "react-router-dom";
 import { divideLineStyle } from "../../styles/PageStyles";
@@ -9,6 +10,7 @@ import Colors from "../../styles/Colors";
 import ViewIconImg from "../../assets/ViewIcon.png";
 import EmotionIconImg from "../../assets/EmotionIcon.png";
 import CommentIconImg from "../../assets/CommentIcon.png";
+import CommentSubmitImg from "../../assets/CommentSubmitImage.png";
 
 import EmotionIconImg1 from "../../assets/emotion/Emotion1.png";
 import EmotionIconImg2 from "../../assets/emotion/Emotion2.png";
@@ -79,7 +81,8 @@ const EmotionBtn = React.memo(
 
 const PostDetail = () => {
   const navigate = useNavigate();
-  // const { id } = useParams();
+  const { id } = useParams();
+  const postId = parseInt(id || "", 10);
   const [emotionData] = useState(dummyData);
 
   const [counts, setCounts] = useState([0, 0, 0, 0, 0, 0, 0]);
@@ -92,7 +95,11 @@ const PostDetail = () => {
   };
 
   const toCommunity = () => {
-    navigate(-1);
+    navigate("/community");
+  };
+
+  const toEdit = (postId: number) => {
+    navigate(`/edit/${postId}`);
   };
 
   return (
@@ -106,7 +113,9 @@ const PostDetail = () => {
           목록
         </div>
         <div css={subMenuContainer}>
-          <div css={menuBtnStyle}>수정</div>
+          <div css={menuBtnStyle} onClick={() => toEdit(postId)}>
+            수정
+          </div>
           <div css={menuBtnStyle}>삭제</div>
         </div>
       </div>
@@ -168,6 +177,16 @@ const PostDetail = () => {
           </div>
         </div>
       </div>
+      <div css={CommentInputContainer}>
+        <textarea
+          css={commentInputStyle}
+          placeholder="댓글을 입력하세요"
+        ></textarea>
+        <div css={commentSubmitBtn}>
+          <img src={CommentSubmitImg} alt="제출" />
+        </div>
+      </div>
+      <div css={emptyStyle}></div>
     </div>
   );
 };
@@ -316,8 +335,6 @@ const commentContainer = css`
   span {
     font-size: ${Fonts.fontsize.h4};
   }
-
-  // border: 1px solid #000000;
 `;
 
 const commentContentContainer = css`
@@ -348,6 +365,64 @@ const replyContainer = css`
   ${commentContainer}
 
   margin-left:30px;
-  // max-width: 80vw;
   padding-right: 0;
+`;
+
+const CommentInputContainer = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+
+  @media (max-width: 767px) {
+    width: 90vw;
+    position: fixed;
+    bottom: 0;
+    background-color: ${Colors.white};
+  }
+`;
+
+const commentInputStyle = css`
+  border: none;
+  outline: none;
+  resize: vertical;
+  overflow-y: auto;
+  width: calc(100% - 32px);
+  height: 42px;
+  padding: 10px 10px;
+  margin-right: 8px;
+  border-radius: 15px;
+  font-size: ${Fonts.fontsize.h4};
+  background-color: ${Colors.lightgray};
+`;
+
+const commentSubmitBtn = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background-color: ${Colors.red.light};
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.1s ease;
+
+  img {
+    width: 25px;
+    height: auto;
+  }
+
+  &:hover {
+    background-color: ${Colors.red.origin};
+    color: ${Colors.white};
+  }
+`;
+
+const emptyStyle = css`
+  @media (max-width: 767px) {
+    height: 100px;
+  }
 `;

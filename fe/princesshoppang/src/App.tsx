@@ -7,6 +7,7 @@ import Community from "./pages/CommunityPage/Community";
 import Profile from "./pages/MyPage/Profile";
 import GlobalStyles from "./layout/GlobalLayout.tsx";
 import PostDetail from "./pages/CommunityPage/PostDetail.tsx";
+import PostCreate from "./pages/CommunityPage/PostCreate.tsx";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/chat" element={<Chat />} />
           <Route path="/community" element={<Community />} />
           <Route path="/community/post/:id" element={<PostDetail />} />
+          <Route path="/community/create" element={<PostCreate />} />
           <Route path="/mypage" element={<Profile />} />
         </Routes>
       </div>

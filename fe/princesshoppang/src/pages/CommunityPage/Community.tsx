@@ -1,34 +1,17 @@
+import { useState } from "react";
 import { css } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 import Fonts from "../../styles/Fonts";
 import Colors from "../../styles/Colors";
 import { containerStyle, categoryTitleStyle } from "../../styles/PageStyles";
-
 import Button from "../../components/Button";
+import CategoryType from "./CategoryType";
+
 import WriteIconImg from "../../assets/WriteIcon.png";
 import ViewIconImg from "../../assets/ViewIcon.png";
 import EmotionIconImg from "../../assets/EmotionIcon.png";
 import CommentIconImg from "../../assets/CommentIcon.png";
 import pc from "../../assets/pc.png";
-
-const mbtiMenuTypes = [
-  "ISTJ",
-  "ISTP",
-  "ISFJ",
-  "ISFP",
-  "INTJ",
-  "INTP",
-  "INFJ",
-  "INFP",
-  "ESTJ",
-  "ESTP",
-  "ESFJ",
-  "ESFP",
-  "ENTJ",
-  "ENTP",
-  "ENFJ",
-  "ENFP",
-];
 
 const dummyData = [
   {
@@ -113,30 +96,32 @@ const dummyData = [
 
 const Community = () => {
   const navigate = useNavigate();
+  const [category, setCategory] = useState("");
 
   const toPostDetail = (id: number) => {
     navigate(`/community/post/${id}`);
+  };
+
+  const toCreatePost = () => {
+    navigate("/community/create");
   };
 
   return (
     <div css={containerStyle}>
       <div css={categoryTitleStyle}>MBTI톡</div>
       <div>
-        <Button type="pill">New</Button>
-        <Button type="pill">Hot</Button>
+        <Button shapeType="pill">New</Button>
+        <Button shapeType="pill">Hot</Button>
       </div>
       <div css={menuContainerStyle}>
         <div css={mbtiContainerStyle}>
-          <div>
-            {mbtiMenuTypes.map((item, idx) => (
-              <Button type="pill" key={idx}>
-                {item}
-              </Button>
-            ))}
-          </div>
+          <CategoryType
+            value={category}
+            onChange={(selectedCategory) => setCategory(selectedCategory)}
+          />
         </div>
         <div css={writeBtnContainerStyle}>
-          <button css={writeBtnStyle}>
+          <button css={writeBtnStyle} onClick={() => toCreatePost()}>
             <img src={WriteIconImg} alt="Write" />
           </button>
         </div>

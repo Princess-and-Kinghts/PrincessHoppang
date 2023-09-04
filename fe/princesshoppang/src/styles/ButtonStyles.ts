@@ -54,6 +54,24 @@ export const buttonStyles = {
       color: ${Colors.white};
     }
   `,
+  selectedPill: css`
+    width: 68px;
+    height: 29px;
+    margin-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: none;
+    border-radius: 20px;
+    background-color: ${Colors.navy.origin};
+    color: ${Colors.white};
+    font-size: ${Fonts.fontsize.h3};
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    transition:
+      background-color 0.2s ease,
+      color 0.1s ease;
+  `,
 };
 
 export default buttonStyles;
