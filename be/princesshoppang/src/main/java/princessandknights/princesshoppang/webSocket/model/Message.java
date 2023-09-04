@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class Message {
     private String type;
     private String channelId;
-    private String sender;
+    private Long sender;
     private Object data;
 }
