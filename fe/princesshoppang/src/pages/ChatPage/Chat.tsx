@@ -1,171 +1,98 @@
-import { useRef, useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router-dom';
-import * as StompJs from '@stomp/stompjs';
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import Stomp from "webstomp-client";
+import SockJS from "sockjs-client";
 
-interface Chat {
-  id: number;
-  content: string;
-  isMine: boolean;
-  time: string;
-  nickname: string;
-}
-
-interface WatingRoomBody {
-  type: string;
-  roomId: number;
-  sendUserId?: string;
-  content?: string;
-}
-
-interface MessageBody {
-  type: string;
-  sendUserId: string;
-  content: string;
-  time: string;
-  nickname: string;
-}
-
+import API from "../../utils/API";
 
 
 const Chat = () => {
-  const { userId } = useParams<{ userId: string }>();
-  // const { selectedMbti } = useContext(MbtiContext);
-  const client = useRef<any>({});
-  // const [chatList, setChatList] = useState<Chat[]>([]);
-  // const [chat, setChat] = useState<string>('');
-  // const [roomId, setRoomId] = useState<number>();
-  // const userNickname = localStorage.getItem('nickname');
-  // const [isMatch, setIsMatch] = useState<boolean>(false);
-  // 고유한 ID를 발급하는 함수
-  // const generateId = (() => {
-  //   let id = 0;
-  //   return () => {
-  //     id += 1;
-  //     return id;
-  //   };
-  // })();
 
-  const disconnect = () => {
-    client.current.deactivate();
-    console.log('채팅이 종료되었습니다.');
-    // setIsMatch(false);
+  const [nickname, setNickname] = useState("");
+
+  const nicknameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    setNickname(event.target.value);
+  }
+  
+  const [message, setmessage] = useState("");
+  
+  const messageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    setmessage(event.target.value);
   };
+  
+  const [chat, setChat] = useState("")
 
-  const onMessageReceived = (message: StompJs.Message) => {
-    // 이게 백에서 설정한 Messge model
-    const messageBody = JSON.parse(message.body) as MessageBody;
-    console.log(messageBody);
+  // websocket 통신
 
-    // const { type, sendUserId, content, time, nickname } = messageBody;
-    // const isMine = sendUserId === userId;
-    // const newChat = {
-    //   id: generateId(),
-    //   content,
-    //   isMine,
-    //   time,
-    //   nickname,
-    // };
-    // console.log(newChat);
-    // setChatList((prevChatList) => [...prevChatList, newChat]);
-    // console.log(chatList);
+  var header = { "AUTH": "test user" };
 
-    // if (type === 'close') {
-    //   console.log('closed');
-    // }
-  };
+  let socket = new SockJS("http://127.0.0.1:8081/ws-stomp/");
+  let stompClient = Stomp.over(socket);
 
-  const subscribeAfterGetRoomId = (id: number) => {
-    client.current.subscribe(`/sub/chat/match/${id}`, onMessageReceived);
-  };
+  useEffect(() => {
+    stompClient.connect(header, function (frame) {
+      console.log("소켓 연결 성공", frame)
+      subscribeTopic();
+    })
+  }, []);
 
-  const publish = () => {
-    console.log("publish")
-    if (!client.current.connected) return;
+  var body = JSON.stringify({
+    type: "TALK",
+    roomId: "0fc97f82-46eb-4772-975b-ecb7a82038e2",
+    sender: nickname,
+    message: message,
+    data: ""
+  });
+  
+  const subscribeTopic = () => {
+    console.log("구독")
+    stompClient.subscribe("/sub/chat/room/0fc97f82-46eb-4772-975b-ecb7a82038e2", function (message) {
+      const msg = JSON.parse(message.body)
+      console.log(msg.sender, "로 부터 새로운 메시지 도착: ", msg.message);
+      setChat(msg.message);
+    }, header)
+  }
 
-    client.current.publish({
-      destination: `/pub/game`,
-      body: JSON.stringify({
-        type: 'match',
-        channelId: "chaen",
-        sender: "자바스크립트",
-        data: "데이터 없음",
-      }),
-    });
+  const unSubscribeTopic = () => {
+    console.log("구독 해제")
+    stompClient.disconnect();
+    // ("/sub/chat/room/0fc97f82-46eb-4772-975b-ecb7a82038e2",header);
+    // ("/sub/chat/room/0fc97f82-46eb-4772-975b-ecb7a82038e2", function (message) {
+    //   const msg = JSON.parse(message.body)
+    //   console.log(msg.sender, "로 부터 새로운 메시지 도착: ", msg.message);
+    //   setChat(msg.message);
+    // }, header)
+  }
+  
 
-  };
-
-  // const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-  //   setChat(event.target.value);
-  // };
-
-  const connect = () => {
-    client.current = new StompJs.Client({
-      brokerURL: 'ws://localhost:8081/ws',
-      onConnect: () => {
-        console.log('connect');
-      },
-    });
-    client.current.activate();
-  };
-
-  const subscribe = () => {
-    client.current.subscribe("/topic/chaen", onMessageReceived)
-    // client.current.subscribe(`/topic/chaen`, () => {
-      console.log("subscribe")
-    // });
-  };
-
-  // // 최초 렌더링시 실행
-  // useEffect(() => {
-  //   const subscribe = () => {
-  //     client.current.subscribe(`/sub/chat/wait/${userId}`, (body) => {
-  //       const watingRoomBody = JSON.parse(body.body) as WatingRoomBody;
-  //       const { type, roomId: newRoomId } = watingRoomBody;
-
-  //       if (type === 'open') {
-  //         console.log('채팅 웨이팅 시작');
-  //       }
-
-  //       if (type === 'match') {
-  //         console.log('매칭이 되었습니다!');
-  //         subscribeAfterGetRoomId(newRoomId);
-  //         setRoomId(newRoomId);
-  //         setIsMatch(true);
-  //       }
-  //     });
-  //   };
-
-  //   const publishOnWait = () => {
-  //     if (!client.current.connected) return;
-
-  //     client.current.publish({
-  //       destination: '/pub/chat/wait',
-  //       body: JSON.stringify({
-  //         type: 'open',
-  //         userId,
-  //         selectMbti: `${selectedMbti}`,
-  //       }),
-  //     });
-  //   };
-
-    
-
-  //   connect();
-
-  //   return () => disconnect();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [userId]);
+  function sendMessage(event: FormEvent<HTMLFormElement>): void {
+    event.preventDefault();
+    stompClient.send("/pub/game/message", body, header)
+    console.log("msg: ", message)
+  }
+ 
 
   return (
     <div>
-      <button onClick={() => {connect()}}>connect</button>
-      <br />
-      <button onClick={() => {subscribe()}}>subscribe</button>
-      <br />
-      <button onClick={() => {publish()}}>publish</button>
-      <br />
-      <button onClick={() => {disconnect()}}>disconnect</button>
+      <h1>Chat</h1>
+      <div>
+        <div>{chat}</div>
+      </div>
+      <form action="submit" onSubmit={sendMessage}>
+        <input 
+          type="text" 
+          onChange={nicknameChangeHandler}
+        />
+        <br />
+        <input
+          type="text"
+          onChange={messageChangeHandler}
+        />
+        <button type="submit" >전송</button>
+      </form>
+      <button onClick={() => {subscribeTopic()}}>구독</button>
+      <button onClick={() => {unSubscribeTopic()}}>구독 해제</button>
     </div>
   );
 };
+
 export default Chat;
