@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequiredArgsConstructor
 @CrossOrigin(origins="*")
-@RequestMapping("/api")
 @Controller
 public class TestController {
     @GetMapping("/test")
