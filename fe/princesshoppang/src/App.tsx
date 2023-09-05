@@ -7,6 +7,7 @@ import Community from "./pages/CommunityPage/Community";
 import Profile from "./pages/MyPage/Profile";
 
 function App() {
+  var global = window;
   return (
     <BrowserRouter>
       <div className="App">
