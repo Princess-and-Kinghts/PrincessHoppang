@@ -29,10 +29,10 @@ const Chat = () => {
   let stompClient = Stomp.over(socket);
 
   useEffect(() => {
-    stompClient.connect(header, function (frame) {
-      console.log("소켓 연결 성공", frame)
-      subscribeTopic();
-    })
+    // stompClient.connect(header, function (frame) {
+      // console.log("소켓 연결 성공", frame)
+      // subscribeTopic();
+    // })
   }, []);
 
   var body = JSON.stringify({

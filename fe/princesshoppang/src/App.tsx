@@ -6,21 +6,24 @@ import Chat from "./pages/ChatPage/Chat";
 import Community from "./pages/CommunityPage/Community";
 import Profile from "./pages/MyPage/Profile";
 
+import { WebSocketProvider } from "./utils/websocket/WebSocketProvider";
+
 function App() {
-  var global = window;
   return (
-    <BrowserRouter>
-      <div className="App">
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/game" element={<Game />} />
-          <Route path="/chat" element={<Chat />} />
-          <Route path="/community" element={<Community />} />
-          <Route path="/mypage" element={<Profile />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <WebSocketProvider>
+      <BrowserRouter>
+        <div className="App">
+          <Header />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/game" element={<Game />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/mypage" element={<Profile />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </WebSocketProvider>
   );
 }
 export default App;
