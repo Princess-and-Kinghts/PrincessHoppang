@@ -88,7 +88,6 @@ const PostDetail = () => {
   const [counts, setCounts] = useState([0, 0, 0, 0, 0, 0, 0]);
 
   const handleEmotionClick = (emotionId: number) => {
-    // 해당 감정 버튼의 count를 1 증가시킴
     const newCounts = [...counts];
     newCounts[emotionId - 1] += 1;
     setCounts(newCounts);
@@ -98,8 +97,14 @@ const PostDetail = () => {
     navigate("/community");
   };
 
-  const toEdit = (postId: number) => {
-    navigate(`/edit/${postId}`);
+  const toEditPost = (postId: number) => {
+    navigate(`/community/edit/${postId}`);
+  };
+
+  const toDeletePost = (postId: number) => {
+    console.log(postId);
+    // 삭제 로직
+    navigate(`/community`);
   };
 
   return (
@@ -113,10 +118,12 @@ const PostDetail = () => {
           목록
         </div>
         <div css={subMenuContainer}>
-          <div css={menuBtnStyle} onClick={() => toEdit(postId)}>
+          <div css={menuBtnStyle} onClick={() => toEditPost(postId)}>
             수정
           </div>
-          <div css={menuBtnStyle}>삭제</div>
+          <div css={menuBtnStyle} onClick={() => toDeletePost(postId)}>
+            삭제
+          </div>
         </div>
       </div>
       <div css={postContentConTainer}>

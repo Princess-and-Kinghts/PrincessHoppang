@@ -19,8 +19,21 @@ const PostEdit = () => {
 
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   //  기존 데이터 가져옴
+  //   fetch(`/api/posts/${postId}`)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setTitle(data.title);
+  //       setContent(data.content);
+  //       setCategory(data.category);
+  //       setIsLoading(false);
+  //     });
+
+  // }, [postId]);
+
   const toDetail = () => {
-    navigate("/community/post/1");
+    navigate(`/community/post/${postId}`);
   };
 
   const handleFilesSelect = (files: File[]) => {
