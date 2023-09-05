@@ -4,7 +4,7 @@ const API = axios.create({
     // local
     baseURL: 'http://127.0.0.1:8081/',
     // server
-    // baseURL: 'https://127.0.0.1:8081/',
+    // baseURL: "https://t0919.p.ssafy.io/",
     headers: {
       "Content-Type": "application/json",
     },
