@@ -4,6 +4,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
+import princessandknights.princesshoppang.community.entity.Comment;
+import princessandknights.princesshoppang.community.entity.Post;
+import princessandknights.princesshoppang.community.entity.Reply;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Setter
@@ -34,4 +40,14 @@ public class User {
     @Column(nullable = false)
     @ColumnDefault("1")
     private int level;
+
+    // Community 관련
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Reply> replies = new ArrayList<>();
 }
