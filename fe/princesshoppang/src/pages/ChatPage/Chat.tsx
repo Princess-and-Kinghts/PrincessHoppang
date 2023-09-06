@@ -1,8 +1,13 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import Stomp from "webstomp-client";
+// import Stomp from "webstomp-client";
+import Stomp from "stompjs";
 import SockJS from "sockjs-client";
+import { useAtom } from "jotai";
+import { webSocketConnectionState } from "../../store/store";
+import { useWebSocket } from "../../utils/websocket/WebSocketProvider";
+import Button from "../../components/Button";
 
-import API from "../../utils/API";
+// import API from "../../utils/API";
 
 
 const Chat = () => {
@@ -25,16 +30,6 @@ const Chat = () => {
 
   var header = { "AUTH": "test user" };
 
-  let socket = new SockJS("http://127.0.0.1:8081/ws-stomp/");
-  let stompClient = Stomp.over(socket);
-
-  useEffect(() => {
-    // stompClient.connect(header, function (frame) {
-      // console.log("소켓 연결 성공", frame)
-      // subscribeTopic();
-    // })
-  }, []);
-
   var body = JSON.stringify({
     type: "TALK",
     roomId: "0fc97f82-46eb-4772-975b-ecb7a82038e2",
@@ -42,7 +37,28 @@ const Chat = () => {
     message: message,
     data: ""
   });
-  
+
+  // let socket = new SockJS("http://127.0.0.1:8081/ws-stomp/");
+  // let stompClient = Stomp.over(socket);
+  let stompClient = useWebSocket();
+
+
+  useEffect(() => {
+    if (stompClient) {  
+      console.log("스톰프 클라이언트", stompClient)
+      subscribeTopic();
+
+    } else {
+        console.log("스톰프 클라이언트 not connected", stompClient)
+
+        stompClient.connect(header, function (frame) {
+        console.log("소켓 연결 성공", frame)
+        subscribeTopic();
+      })
+    }
+   
+  }, []);
+
   const subscribeTopic = () => {
     console.log("구독")
     stompClient.subscribe("/sub/chat/room/0fc97f82-46eb-4772-975b-ecb7a82038e2", function (message) {
@@ -52,9 +68,11 @@ const Chat = () => {
     }, header)
   }
 
-  const unSubscribeTopic = () => {
+  const disconnect = () => {
     console.log("구독 해제")
-    stompClient.disconnect();
+    stompClient.disconnect(() => {
+      console.log("disconnect 함수 안")
+    }, header);
     // ("/sub/chat/room/0fc97f82-46eb-4772-975b-ecb7a82038e2",header);
     // ("/sub/chat/room/0fc97f82-46eb-4772-975b-ecb7a82038e2", function (message) {
     //   const msg = JSON.parse(message.body)
@@ -66,7 +84,7 @@ const Chat = () => {
 
   function sendMessage(event: FormEvent<HTMLFormElement>): void {
     event.preventDefault();
-    stompClient.send("/pub/game/message", body, header)
+    stompClient.send("/pub/game", header, body)
     console.log("msg: ", message)
   }
  
@@ -90,7 +108,8 @@ const Chat = () => {
         <button type="submit" >전송</button>
       </form>
       <button onClick={() => {subscribeTopic()}}>구독</button>
-      <button onClick={() => {unSubscribeTopic()}}>구독 해제</button>
+      <button onClick={() => {disconnect()}}>구독 해제</button>
+      
     </div>
   );
 };

@@ -3,10 +3,10 @@ import { atom } from "jotai"
 
 // export const mainStore = createStore();
 
-const webSocketMessagesState = atom("");
-const webSocketConnectionState = atom(false);
+const players = atom("");
+const me = atom(0);
 
 export{
-    webSocketMessagesState,
-    webSocketConnectionState,
+    players,
+    me,
 }

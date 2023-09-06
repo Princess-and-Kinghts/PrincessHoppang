@@ -1,11 +1,32 @@
+import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 
 const Home = () => {
+
+  const navigate = useNavigate();
+
+  // 매칭 페이지로 이동
+  const toMatching = () => {
+    navigate("/game")
+  };
+
+  // 게임 시작 버튼
+  const startGame = () =>{
+    toMatching()
+  };
+
+
   return (
     <div>
       <h1>Home</h1>
-      <Button type="basic">확인하기</Button>
-      <Button type="pill">ENTP</Button>
+      <Button
+          type="button"
+          shapeType={"confirm"}
+          key="0"
+          onClick={() => { startGame() }}
+        >
+          게임 시작
+        </Button>
     </div>
   );
 };

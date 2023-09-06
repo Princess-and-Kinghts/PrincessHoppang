@@ -9,6 +9,7 @@ import Profile from "./pages/MyPage/Profile";
 import { WebSocketProvider } from "./utils/websocket/WebSocketProvider";
 
 function App() {
+
   return (
     <WebSocketProvider>
       <BrowserRouter>
@@ -23,6 +24,7 @@ function App() {
           </Routes>
         </div>
       </BrowserRouter>
+
     </WebSocketProvider>
   );
 }
