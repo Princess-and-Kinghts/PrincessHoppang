@@ -20,7 +20,6 @@ const MyChat = ({
 
         
             {/* 메세지 */}
-            <div>
                 {messages?.map((item, idx) => (
                     <>
                         <div
@@ -29,11 +28,9 @@ const MyChat = ({
                         >
                             {item.message}
                         </div>
-                        <br />
                     </>
                 ))}
             
-            </div>
 
             {/* 보낸 시간 */}
             <p>{sentAt}</p>

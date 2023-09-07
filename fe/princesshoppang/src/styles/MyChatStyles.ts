@@ -5,8 +5,9 @@ import Colors from "./Colors";
 export const myChatStyles = {
   outerContainer: css`
     display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: flex-end;
     padding: 13px 15px;
     
     // 앱
@@ -18,7 +19,6 @@ export const myChatStyles = {
 
   // 말풍선
   red: css`
-    float: right;
     display: inline-block;
     word-wrap: break-word;
     height: auto;
