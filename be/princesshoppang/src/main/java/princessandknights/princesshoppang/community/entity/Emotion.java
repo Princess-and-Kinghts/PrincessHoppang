@@ -1,7 +1,16 @@
 package princessandknights.princesshoppang.community.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
+import princessandknights.princesshoppang.user.entity.User;
 
+@Slf4j
+@Setter
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Emotion  {
 
@@ -11,31 +20,35 @@ public class Emotion  {
 
     @OneToOne
     @JoinColumn(name = "post_id")
-    @Column(nullable = false)
     private Post post;
 
-    @JoinColumn(name = "like")
+    @JoinColumn(name = "good")
     @Column(nullable = false)
-    private Long like;
+    private int good;
     @JoinColumn(name = "agree")
     @Column(nullable = false)
-    private Long agree;
+    private int agree;
 
     @JoinColumn(name = "eh")
     @Column(nullable = false)
-    private Long eh;
+    private int eh;
     @JoinColumn(name = "aww")
     @Column(nullable = false)
-    private Long aww;
+    private int aww;
     @JoinColumn(name = "annoy")
     @Column(nullable = false)
-    private Long annoy;
+    private int annoy;
 
     @JoinColumn(name = "sad")
     @Column(nullable = false)
-    private Long sad;
+
+    private int sad;
     @JoinColumn(name = "idtlt")
     @Column(nullable = false)
-    private Long idtlt;
+    private int idtlt;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

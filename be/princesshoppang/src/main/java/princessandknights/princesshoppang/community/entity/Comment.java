@@ -1,6 +1,8 @@
 package princessandknights.princesshoppang.community.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import princessandknights.princesshoppang.user.entity.User;
 
 import java.time.LocalDateTime;
@@ -8,6 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@Slf4j
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class Comment {
 
@@ -21,22 +29,20 @@ public class Comment {
     @Column(nullable = false)
     private LocalDateTime createdAt;
     @Column(nullable = false)
-    private Long anonymous_num;
+    private int anonymous_num;
 
     // 게시글 아이디
     @ManyToOne
     @JoinColumn(name="post_id")
-    @Column(nullable = false)
     private Post post;
 
     // 작성자 아이디
     @ManyToOne
     @JoinColumn(name="user_id")
-    @Column(nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "comment" )
-    private List<Reply> reply = new ArrayList<>();
+    private List<Reply> replies = new ArrayList<>();
 
 
 }

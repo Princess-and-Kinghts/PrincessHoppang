@@ -20,7 +20,7 @@ public class Reply {
 
     @JoinColumn(name = "anonymous_num")
     @Column(nullable = false)
-    private Long anonymousNum;
+    private int anonymousNum;
 
     // 작성자 아이디
     @ManyToOne

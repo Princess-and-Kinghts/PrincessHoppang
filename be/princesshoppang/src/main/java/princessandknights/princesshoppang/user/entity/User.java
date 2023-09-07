@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
 import princessandknights.princesshoppang.community.entity.Comment;
+import princessandknights.princesshoppang.community.entity.Emotion;
 import princessandknights.princesshoppang.community.entity.Post;
 import princessandknights.princesshoppang.community.entity.Reply;
 
@@ -50,4 +51,7 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Reply> replies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Emotion> emotions = new ArrayList<>();
 }
