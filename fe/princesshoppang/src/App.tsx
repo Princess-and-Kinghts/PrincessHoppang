@@ -17,7 +17,7 @@ function App() {
           <Header />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/game" element={<Game />} />
+            <Route path="/game/:roomId" element={<Game />} />
             <Route path="/chat" element={<Chat />} />
             <Route path="/community" element={<Community />} />
             <Route path="/mypage" element={<Profile />} />

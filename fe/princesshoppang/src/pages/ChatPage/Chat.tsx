@@ -51,10 +51,10 @@ const Chat = () => {
     } else {
         console.log("스톰프 클라이언트 not connected", stompClient)
 
-        stompClient.connect(header, function (frame) {
-        console.log("소켓 연결 성공", frame)
-        subscribeTopic();
-      })
+        stompClient.connect(header, function (frame: any) {
+          console.log("소켓 연결 성공", frame)
+          subscribeTopic();
+        })
     }
    
   }, []);

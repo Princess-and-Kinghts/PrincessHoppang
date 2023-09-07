@@ -43,7 +43,7 @@ export function useWebSocket() {
   const stompClient = useContext(WebSocketContext);
 
   if (!stompClient) {
-    throw new Error('useWebSocket must be used within a WebSocketProvider');
+    // throw new Error('useWebSocket must be used within a WebSocketProvider');
   }
 
   return stompClient;

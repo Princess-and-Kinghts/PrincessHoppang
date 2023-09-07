@@ -1,13 +1,18 @@
+import { useEffect, useState } from "react";
 import Colors from "../../styles/Colors";
 import { css } from "@emotion/react";
 import { useAtom } from "jotai";
-import { me } from "../../store/GameState";
+
 import InputBox from "../../components/InputBox";
 import TheirChat from "../../components/TheirChat";
 import MyChat from "../../components/MyChat";
+import { useWebSocket } from "../../utils/websocket/WebSocketProvider";
+import { me } from "../../store/GameState";
+import { GameChat } from "../../types/ChatTypes";
 
 const GameChat = () => {
-    const messages = ["hello", "hi", "aksjflajdflkajsdflkjasd;lkfjasldkfja;slkdjfdslkdjfdslkdjfdslkdjfdslkdjfdslkdjfdslkdjfdslkdjfdslkdjfdslkdjfdslkdjfdslkdjfdslkdjfdslkdjfdslkdjfd;alskjfa;lskdfj"]; 
+    
+    const [messages, setMessages] = useState<GameChat[]>([]); 
     const [themeColor,setThemeColor] = useAtom(me);
 
     const testColor = () => {
@@ -17,9 +22,46 @@ const GameChat = () => {
       console.log(themeColor)
     }
 
-    // useEffect(() => {
+    // webSocket 사용
+    let stompClient = useWebSocket();
+
+    var header = { "AUTH": "test user" };
+
+    var body = JSON.stringify({
+      type: "TALK",
+      roomId: "0fc97f82-46eb-4772-975b-ecb7a82038e2",
+      sender: "nickname",
+      message: "message",
+      data: ""
+    });
+
+    useEffect(() => {
+      if (stompClient) {  
+        console.log("스톰프 클라이언트", stompClient)
+        subscribeTopic();
+  
+      } else {
+          console.log("스톰프 클라이언트 not connected", stompClient)
+  
+          stompClient?.connect(header, function (frame: any) {
+            console.log("소켓 연결 성공", frame)
+            subscribeTopic();
+          })
+      }
+     
+    }, []);
+  
+    const subscribeTopic = () => {
+      console.log("구독")
+      stompClient?.subscribe("/sub/chat/room/0fc97f82-46eb-4772-975b-ecb7a82038e2", function (message) {
+        const msg = JSON.parse(message.body)
+        const newMessage : GameChat = {nickname: "바보", message: msg.message}
+        setMessages(prevMessages => [...prevMessages, newMessage]);
+
+        console.log(msg.sender, "로 부터 새로운 메시지 도착: ", msg.message);      
       
-    // }, [])
+      }, header)
+    }
 
     return (
       <div css={themeLight({themeColor})}>
@@ -31,7 +73,6 @@ const GameChat = () => {
             messages={messages}
           />
           <MyChat
-            type="game"
             color="red"
             messages={messages}
           />

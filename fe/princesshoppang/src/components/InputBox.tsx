@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import inputboxStyles from "../styles/InputBoxStyles";
 import vote from "../assets/game/vote.png";
+import { useWebSocket } from "../utils/websocket/WebSocketProvider";
+import { useAtom, useAtomValue } from "jotai";
+import { headerAtom } from "../store/WebSocketState";
+import { me } from "../store/GameState";
+import { send } from "vite";
 
 type InputBoxProps = {
     type: "game" | "chat";
@@ -16,8 +21,25 @@ const InputBox = ({
 
   const submitHandler = (event: { preventDefault: () => void; }) => {
     event.preventDefault();
-    // 메세지 보내는 코드 넣기
+    sendMessage();
     setMessage("")
+  }
+  
+  let stompClient = useWebSocket();
+  
+  const header = useAtomValue(headerAtom);
+
+  var body = JSON.stringify({
+    type: "TALK",
+    roomId: "0fc97f82-46eb-4772-975b-ecb7a82038e2",
+    sender: "nickname",
+    message: message,
+    data: ""
+  });
+
+  async function sendMessage() {
+    await stompClient?.send("/pub/game", header, body)
+    console.log("msg: ", message)
   }
 
   return (
@@ -35,7 +57,7 @@ const InputBox = ({
            : null
         }
         
-        <textarea css={inputboxStyles["textarea"]} value={message} onChange={(e)=>{setMessage(e.target.value)}}/>
+        <textarea css={inputboxStyles["textarea"]} value={message} onChange={(e)=>{setMessage(e.target.value); console.log(message)}}/>
         <button css={message? inputboxStyles[color]: inputboxStyles["deactivated"]} type="submit">
           전송
         </button>

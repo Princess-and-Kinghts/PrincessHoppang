@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import red from "../assets/game/red.jpg";
 import { theirChatStyles } from "../styles/TheirChatStyles";
+import { GameChat } from "../types/ChatTypes";
 
 type TheirChatProps = {
     type: "game" | "chat";
-    messages?: string[];
+    messages?: GameChat[];
     color: "red" | "orange" | "yellow" | "green" | "blue" | "navy" | "purple";
     sentAt?: String;
 };
@@ -15,6 +16,7 @@ const TheirChat = ({
     color,
     sentAt
 }: TheirChatProps) => {
+    
     const [nickname, setNickname] = useState("")
 
     useEffect(()=>{
@@ -49,19 +51,20 @@ const TheirChat = ({
 
         <div>
             {/* 닉네임 */}
-            <div css={theirChatStyles["nickname"]}>
-                {nickname}
-            </div>
+            
 
             {/* 메세지 */}
             <div>
                 {messages?.map((item, idx) => (
                     <>
+                    <div css={theirChatStyles["nickname"]}>
+                            {item.nickname}
+                        </div>
                         <div
                             css={theirChatStyles["chat"]}
                             key={idx}
                         >
-                            {item}
+                            {item.message}
                         </div>
                         <br />
                     </>
