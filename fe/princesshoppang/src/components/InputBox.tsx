@@ -1,16 +1,14 @@
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import inputboxStyles from "../styles/InputBoxStyles";
+import vote from "../assets/game/vote.png";
 
 type InputBoxProps = {
-  // 스타일 추가한다면 여기도 추가 필요
-  
-  color: "deactivated" | "red" | "orange" | "yellow" | "green" | "blue" | "navy" | "purple";
-  onChange: () => void;
-  onSubmit?: () => void;
+    type: "game" | "chat";
+    color: "deactivated" | "red" | "orange" | "yellow" | "green" | "blue" | "navy" | "purple";
 };
 
 const InputBox = ({
-  // deviceType,
+  type,
   color,
 }: InputBoxProps) => {
 
@@ -26,6 +24,17 @@ const InputBox = ({
     // <button css={buttonStyles[shapeType]} type={type}>
     <div>
       <form css={inputboxStyles["outerContainer"]} action="submit" onSubmit={submitHandler}>
+        {type == "game" ? 
+          <div> 
+            <img 
+              css={inputboxStyles["vote"]}
+              src={vote} 
+              alt="vote" 
+            /> 
+          </div>
+           : null
+        }
+        
         <textarea css={inputboxStyles["textarea"]} value={message} onChange={(e)=>{setMessage(e.target.value)}}/>
         <button css={message? inputboxStyles[color]: inputboxStyles["deactivated"]} type="submit">
           전송

@@ -4,13 +4,12 @@ import Colors from "./Colors";
 
 export const inputBoxStyles = {
   outerContainer: css`
-    diplay: flex;
+    display: flex;
     flex-direction:row;
     justify-content: space-between;
-    align-content: center;
-    width: 800px;
+    align-items: center;
+    width: 60vw;
     height: 70px;
-    padding: 13px 15px;
     border: none;
     border-radius: 15px;
     background-color: ${Colors.white};
@@ -18,24 +17,36 @@ export const inputBoxStyles = {
     font-weight: bold;
     cursor: pointer;
     text-align: center;
+    position: absolute;
+    bottom: 20px;
+    
     // 앱
     @media (max-width: 767px) {
       height: 50px;
-      width: 100vw;
-      padding: 1px 2px;
+      width: 100%;
       border-radius: 0px;
+      bottom: 0;
     }
+  `, 
+
+  vote: css`
+    margin-right: 0px;
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
   `,
 
   textarea: css`
-    flex-grow: 3;
-    align-self: center;
+    margin: 2% 0;
+    flex-grow: 1;
     border: none;
+    margin-left: 10px;
+    margin-right: 5px;
+
   `,
 
   // 메세지를 입력하지 않았을 때 버튼
   deactivated: css`
-    flex-grow: 1;
     align-self: center;
     width: 62px;
     height: 47px;
