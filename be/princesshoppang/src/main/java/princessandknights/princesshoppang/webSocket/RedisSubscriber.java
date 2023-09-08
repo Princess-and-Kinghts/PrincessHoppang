@@ -20,6 +20,8 @@ public class RedisSubscriber {
      * Redis에서 메시지가 발행(publish)되면 대기하고 있던 Redis Subscriber가 해당 메시지를 받아 처리한다.
      */
     public void sendMessage(String publishMessage) {
+        log.info(publishMessage.toString());
+
         try {
             // ChatMessage 객채로 맵핑
             ChatMessage chatMessage = objectMapper.readValue(publishMessage, ChatMessage.class);
