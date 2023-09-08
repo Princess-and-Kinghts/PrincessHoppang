@@ -5,9 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import org.springframework.web.multipart.MultipartFile;
 import princessandknights.princesshoppang.community.entity.Post;
+import princessandknights.princesshoppang.community.entity.PostFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter @Setter
 @NoArgsConstructor
@@ -31,6 +35,11 @@ public class PostDto {
     private int emotionCount;
     private int commentCount;
 
+    private List<MultipartFile> postFile;
+    private List<String> originalFileName;
+    private List<String> imageUrl;
+    // 파일 첨부 여부(1/0)
+    private int fileAttached;
 
 
     public static PostDto toPostDto(Post post, int commentCount, int emotionCount) {
@@ -46,6 +55,24 @@ public class PostDto {
         postDto.setMbtiId(post.getUser().getMbti());
         postDto.setEmotionCount(emotionCount);
         postDto.setCommentCount(commentCount);
+
+
+        // file 관련 필요한 값은 originalname과 imageUrl, 그리고 실제로 잘쓰이는건 ImageUrl
+        if (post.getFileAttached() == 0){
+            postDto.setFileAttached(post.getFileAttached());
+        } else {
+            postDto.setFileAttached(post.getFileAttached());
+            List<String> originalFileNameList = new ArrayList<>();
+            List<String> imageUrlList = new ArrayList<>();
+
+            for (PostFile postFile :post.getPostFileList()) {
+                originalFileNameList.add(postFile.getOriginalFileName());
+                imageUrlList.add(postFile.getImageUrl());//
+            }
+
+            postDto.setOriginalFileName(originalFileNameList);
+            postDto.setImageUrl(imageUrlList);
+        }
         return postDto;
     }
 

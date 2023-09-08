@@ -19,15 +19,14 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name = "category_id")
     private Long categoryId;
 
     @Column(nullable = false)
-    @JoinColumn(name = "category_title")
     private String categoryTitle;
 
-    @OneToMany(mappedBy = "category")
-    private List<Post> posts = new ArrayList<>();
+    // 연관관계는 사라져도 자식엔티티가 제거되진 않음
+    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Post> postList = new ArrayList<>();
 
     public static Category toSaveEntity(CategoryDto categoryDto, Post post) {
 

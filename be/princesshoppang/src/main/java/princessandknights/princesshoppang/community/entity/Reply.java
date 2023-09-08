@@ -1,6 +1,7 @@
 package princessandknights.princesshoppang.community.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 import princessandknights.princesshoppang.user.entity.User;
 
 import java.time.LocalDateTime;
@@ -11,14 +12,12 @@ public class Reply {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long replyId;
 
-    @JoinColumn(name = "content")
     @Column(nullable = false)
     private String content;
-    @JoinColumn(name = "create_at")
-    @Column(nullable = false)
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @JoinColumn(name = "anonymous_num")
     @Column(nullable = false)
     private int anonymousNum;
 

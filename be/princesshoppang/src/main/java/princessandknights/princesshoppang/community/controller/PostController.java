@@ -10,6 +10,7 @@ import princessandknights.princesshoppang.community.dto.PostDto;
 import princessandknights.princesshoppang.community.entity.Post;
 import princessandknights.princesshoppang.community.service.PostService;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
@@ -19,16 +20,17 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
+
     @GetMapping("/")
     public List<PostDto> getAllPosts() {
         return postService.getAllPosts();
     }
 
     @PostMapping("/post/create")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Post createPost(@RequestBody PostDto postDto) {
-        Post post = postService.createPost(postDto);
-        return post;
+    public ResponseEntity<Post> createPost(@ModelAttribute PostDto postDto) throws IOException {
+
+        postService.createPost(postDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/post/{id}")
@@ -50,7 +52,12 @@ public class PostController {
         PostDto upDatedPostDto= postService.updatePost(id, postDto);
         return ResponseEntity.ok(upDatedPostDto);
     }
-
+    // delete
+    @DeleteMapping("/post/delete/{id}")
+    public Long deletePost(@PathVariable Long id) {
+        postService.delete(id);
+        return id;
+    }
 
 
 

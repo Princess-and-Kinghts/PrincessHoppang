@@ -4,12 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
-import princessandknights.princesshoppang.user.entity.User;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 
 @Slf4j
 @Getter
@@ -18,37 +14,36 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Comment {
-
+public class PostFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private Long commentId;
+    @Column
+    private String originalFileName;
 
-    @Column(nullable = false)
-    private String content;
+    @Column
+    private String imageUrl;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-
-    @Column(nullable = false)
-    private int anonymous_num;
-
-    // 게시글 아이디
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="post_id")
     private Post post;
 
-    // 작성자 아이디
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id")
-    private User user;
 
+    public static PostFile toPostFileEntity(Post post, String originalFileName, String imageUrl) {
 
-    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
-    private List<Reply> replyList= new ArrayList<>();
+        PostFile postFile = PostFile.builder()
+                .originalFileName(originalFileName)
+                .imageUrl(imageUrl)
+                .post(post)
+                .build();
+
+        return postFile;
+    }
 
 
 }

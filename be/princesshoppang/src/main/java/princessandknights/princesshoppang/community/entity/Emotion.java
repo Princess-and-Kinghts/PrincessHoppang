@@ -25,6 +25,7 @@ public class Emotion  {
     @JoinColumn(name = "good")
     @Column(nullable = false)
     private int good;
+
     @JoinColumn(name = "agree")
     @Column(nullable = false)
     private int agree;
@@ -32,22 +33,24 @@ public class Emotion  {
     @JoinColumn(name = "eh")
     @Column(nullable = false)
     private int eh;
+
     @JoinColumn(name = "aww")
     @Column(nullable = false)
     private int aww;
+
     @JoinColumn(name = "annoy")
     @Column(nullable = false)
     private int annoy;
 
     @JoinColumn(name = "sad")
     @Column(nullable = false)
-
     private int sad;
+
     @JoinColumn(name = "idtlt")
     @Column(nullable = false)
     private int idtlt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
