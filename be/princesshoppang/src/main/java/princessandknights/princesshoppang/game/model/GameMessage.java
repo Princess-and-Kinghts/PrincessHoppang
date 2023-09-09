@@ -39,7 +39,7 @@ public class GameMessage {
 
     @Override
     public String toString() {
-        return "ChatMessage [type=" + type + ", roomId=" + roomId + ", sender=" + sender + ", message=" + message
+        return "ChatMessage [type=" + type + ", roomId=" + roomId + ", userId=" + userId + ", message=" + message
                 + ", data=" + data + "]";
     }
 
