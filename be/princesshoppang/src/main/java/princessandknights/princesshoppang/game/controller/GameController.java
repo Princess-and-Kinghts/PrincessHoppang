@@ -59,7 +59,7 @@ public class GameController {
     /**
      * 게임 시작
      */
-    @MessageMapping("/matching")
+    @MessageMapping("/match")
     public void startMatching(GameMessage message) {
 
         Optional<User> userOptional = userRepository.findById(message.getUserId());
