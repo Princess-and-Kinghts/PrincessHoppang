@@ -25,15 +25,6 @@ public class GameMessageController {
     private final SimpMessageSendingOperations messageSendingOperations;
 
 
-    private final Deque<PlayerDto> E = new ArrayDeque<>();
-    private final Deque<PlayerDto> I = new ArrayDeque<>();
-    private final Deque<PlayerDto> N = new ArrayDeque<>();
-    private final Deque<PlayerDto> S = new ArrayDeque<>();
-    private final Deque<PlayerDto> T = new ArrayDeque<>();
-    private final Deque<PlayerDto> F = new ArrayDeque<>();
-    private final Deque<PlayerDto> P = new ArrayDeque<>();
-    private final Deque<PlayerDto> J = new ArrayDeque<>();
-
     /*
         /pub/game              메시지 발행
         /topic/channelId        구독
