@@ -77,6 +77,7 @@ public class Post {
                 .categoryId(postDto.getCategoryId())
                 .build();
 
+
         Post post = Post.builder()
                 .title(postDto.getTitle())
                 .content(postDto.getContent())
@@ -90,7 +91,37 @@ public class Post {
         return post;
     }
 
+
+    @PrePersist
+    public void randomAnonymousNum() {
+        Random random = new Random();
+        // (10000~99999)
+        this.anonymousNum = random.nextInt(90000) + 10000;
+    }
+
+
+    public static Post toUpdateEntity(Post post, PostDto postDto) {
+        User user = User.builder()
+                .userId(postDto.getUserId())
+                .mbti(postDto.getMbtiId())
+                .build();
+
+        Category category = Category.builder()
+                .categoryId(postDto.getCategoryId())
+                .build();
+
+        post.setTitle(postDto.getTitle());
+        post.setContent(postDto.getContent());
+        post.setCategory(category);
+        post.setUser(user);
+        post.setViewCount(postDto.getViewCount());
+
+        return post;
+    }
+
+
     public static Post toSaveFileEntity(PostDto postDto) {
+
         User user = User.builder()
                 .userId(postDto.getUserId())
                 .mbti(postDto.getMbtiId())
@@ -113,15 +144,9 @@ public class Post {
         return post;
     }
 
-    @PrePersist
-    public void randomAnonymousNum() {
-        Random random = new Random();
-        // (10000~99999)
-        this.anonymousNum = random.nextInt(90000) + 10000;
-    }
+    public static Post toUpdateFileEntity(Post post, PostDto postDto) {
 
 
-    public static Post toUpdateEntity(Post post, PostDto postDto) {
         User user = User.builder()
                 .userId(postDto.getUserId())
                 .mbti(postDto.getMbtiId())
@@ -131,19 +156,16 @@ public class Post {
                 .categoryId(postDto.getCategoryId())
                 .build();
 
-        post.setPostId(postDto.getPostId());
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
-        post.setAnonymousNum(postDto.getAnonymousNum());
         post.setUser(user);
         post.setCategory(category);
-        post.setCreatedAt(postDto.getCreatedAt());
         post.setViewCount(postDto.getViewCount());
+        post.setFileAttached(0);
 
 
         return post;
     }
-
 
 
 

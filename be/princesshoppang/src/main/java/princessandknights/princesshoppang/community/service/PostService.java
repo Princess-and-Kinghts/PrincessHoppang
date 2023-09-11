@@ -1,5 +1,6 @@
 package princessandknights.princesshoppang.community.service;
 
+import com.amazonaws.services.s3.model.MultipartUpload;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,11 +13,9 @@ import princessandknights.princesshoppang.community.repository.EmotionRepository
 import princessandknights.princesshoppang.community.repository.PostFileRepository;
 import princessandknights.princesshoppang.community.repository.PostRepository;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +29,9 @@ public class PostService {
     // Create
 
     public Post createPost(PostDto postDto) throws IOException {
-        if (postDto.getPostFile().isEmpty()) {
+        MultipartFile file = postDto.getPostFile().get(0);
+
+        if(file.isEmpty() || file.getSize() == 0){
             Post post = Post.toSaveEntity(postDto);
             postRepository.save(post);
 
@@ -44,10 +45,6 @@ public class PostService {
                 // 파일이름 가져오기
                 String originalFilename = postFile.getOriginalFilename();
                 String imageUrl = s3Uploader.uploadFiles(postFile, "postImages");
-
-                // 저장 경로 설정 및 그 경로에 파일 저장
-//                String savePath = "C:/springboot_img/" + storedFileName;
-//                postFile.transferTo(new File(savePath));
 
                 PostFile newPostfile = PostFile.toPostFileEntity(tempPost, originalFilename, imageUrl);
                 postFileRepository.save(newPostfile);
@@ -99,26 +96,114 @@ public class PostService {
     }
 
 
-    // update(PostDto는 새로 들어온 정보),
+    // update(PostDto는 새로 들어온 정보), update 보류
     @Transactional
-    public PostDto updatePost(Long id, PostDto postDto) {
-        //id로 해당 post 가져와서
+    public PostDto updatePost(Long id, PostDto postDto) throws IOException {
+
         Optional<Post> optionalPost = postRepository.findById(id);
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
+
+            // 리스트를 받아와서 originalFileName으로 먼저 구분
+            List<MultipartFile> newPostFiles = postDto.getPostFile();
+            List<String> newOriginalFileNames = postDto.getOriginalFileName();
+            if (newOriginalFileNames == null) {
+                newOriginalFileNames = new ArrayList<>();
+            }
+
+            MultipartFile checkFile = newPostFiles.get(0);
+            if (checkFile.isEmpty() || checkFile.getSize() == 0) {
+                // 기존 파일 전부 삭제
+                deleteAllFiles(post);
+                Post noFilePost = Post.toUpdateFileEntity(post, postDto);
+                postRepository.save(noFilePost);
+
+
+            } else {
+                for (MultipartFile file : newPostFiles) {
+
+                    String originalFilename = file.getOriginalFilename();
+                    newOriginalFileNames.add(originalFilename);
+                }
+                // 실제 구분 및 s3 업데이트 로직
+                deleteAndAddFiles(post, newPostFiles, newOriginalFileNames);
+            }
+
             Post.toUpdateEntity(post, postDto);
             postRepository.save(post);
 
             int commentCount = post.getCommentList().size();
             int emotionCount = emotionRepository.countEmotionsByPost(post).intValue();
-            return PostDto.toPostDto(post, commentCount, emotionCount);
 
-        }   else {
+            PostDto updatedPostDto = PostDto.toPostDto(post, commentCount, emotionCount);
+            return updatedPostDto;
+        } else {
             return null;
         }
-
     }
 
+
+    private void deleteAndAddFiles(Post post, List<MultipartFile> newPostFiles, List<String> newOriginalFileNames) throws IOException {
+
+        // 비교할 수 있도록 파일이름 받아옴
+        Set<String> existingFileNames = post.getPostFileList().stream()
+                .map(PostFile::getOriginalFileName)
+                .collect(Collectors.toSet());
+
+        // 삭제할 파일 리스트
+        List<PostFile> filesToDelete = new ArrayList<>();
+
+
+        if (newOriginalFileNames != null) {
+            for (PostFile existingFile : post.getPostFileList()) {
+                // newOriginalFileNames에 값이 존재하고, existingFile의 originalFileName이 newOriginalFileNames에 포함되지 않으면 삭제할 파일 리스트에 추가
+                if (!newOriginalFileNames.contains(existingFile.getOriginalFileName())) {
+                    filesToDelete.add(existingFile);
+                }
+            }
+        }
+
+        // 파일 삭제
+        for (PostFile fileToDelete : filesToDelete) {
+            String oldImageUrl = fileToDelete.getImageUrl();
+            String oldOriginalFileName = fileToDelete.getOriginalFileName();
+            if (oldImageUrl != null) {
+                s3Uploader.deleteS3(oldImageUrl, oldOriginalFileName);
+            }
+
+            // 이게 맞나...?
+            post.getPostFileList().remove(fileToDelete);
+            postFileRepository.delete(fileToDelete);
+        }
+
+        // 파일 추가
+        if (newOriginalFileNames != null) {
+            for (int i = 0; i < newPostFiles.size(); i++) {
+                MultipartFile newPostFile = newPostFiles.get(i);
+                String newOriginalFileName = newOriginalFileNames.get(i);
+
+                // originalfilename을 비교하여 현존하는 파일리스트에 없다면 추가
+                if (!existingFileNames.contains(newOriginalFileName)) {
+                    String newFileUrl = s3Uploader.uploadFiles(newPostFile, "postImages");
+                    PostFile updatedPostFile = PostFile.toPostFileEntity(post, newOriginalFileName, newFileUrl);
+                    postFileRepository.save(updatedPostFile);
+                }
+            }
+        }
+    }
+
+    private void deleteAllFiles(Post post) {
+        // 모든 파일 삭제
+        List<PostFile> filesToDelete = post.getPostFileList();
+        for (PostFile fileToDelete : filesToDelete) {
+            String oldImageUrl = fileToDelete.getImageUrl();
+            String oldOriginalFileName = fileToDelete.getOriginalFileName();
+            if (oldImageUrl != null) {
+                s3Uploader.deleteS3(oldImageUrl, oldOriginalFileName);
+            }
+            postFileRepository.delete(fileToDelete);
+        }
+    }
 
     public void delete(Long id) {
         // 게시물을 먼저 조회
@@ -137,8 +222,15 @@ public class PostService {
             }
             // db 삭제
             postRepository.deleteById(id);
-        }
-    }
 
+            // 삭제 후 해당 게시물을 조회하여 존재하는지 확인
+            boolean isDeleted = !postRepository.existsById(id);
+            if (!isDeleted) {
+                throw new RuntimeException("게시물 " + id + " 삭제에 실패하였습니다.");
+
+            }
+        }
+
+    }
 
 }

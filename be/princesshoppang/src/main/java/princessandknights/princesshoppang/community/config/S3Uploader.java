@@ -58,8 +58,7 @@ public class S3Uploader {
 
             System.out.println("object =========" + objectKey);
             System.out.println("object =========" + objectKey);
-            System.out.println("object =========" + objectKey);
-            System.out.println("object =========" + objectKey);
+
 
         } catch (AmazonS3Exception e) {
             // Amazon S3에서 예외

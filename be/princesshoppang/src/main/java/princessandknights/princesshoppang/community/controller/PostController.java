@@ -48,16 +48,22 @@ public class PostController {
     }
 
     @PutMapping("/post/update/{id}")
-    public ResponseEntity<PostDto> updatePost(@PathVariable Long id, @RequestBody PostDto postDto) {
+    public ResponseEntity<PostDto> updatePost(@PathVariable Long id, @ModelAttribute PostDto postDto) throws IOException {
         PostDto upDatedPostDto= postService.updatePost(id, postDto);
         return ResponseEntity.ok(upDatedPostDto);
     }
     // delete
+
     @DeleteMapping("/post/delete/{id}")
-    public Long deletePost(@PathVariable Long id) {
-        postService.delete(id);
-        return id;
+    public ResponseEntity<String> deletePost(@PathVariable Long id) {
+        try {
+            postService.delete(id);
+            return ResponseEntity.ok("게시물이 성공적으로 삭제되었습니다.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시물 삭제에 실패하였습니다.");
+        }
     }
+
 
 
 

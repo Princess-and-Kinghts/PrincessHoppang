@@ -58,8 +58,9 @@ public class PostDto {
 
 
         // file 관련 필요한 값은 originalname과 imageUrl, 그리고 실제로 잘쓰이는건 ImageUrl
-        if (post.getFileAttached() == 0){
+        if (post.getFileAttached() == 0 && post.getPostFileList().isEmpty()){
             postDto.setFileAttached(post.getFileAttached());
+
         } else {
             postDto.setFileAttached(post.getFileAttached());
             List<String> originalFileNameList = new ArrayList<>();
