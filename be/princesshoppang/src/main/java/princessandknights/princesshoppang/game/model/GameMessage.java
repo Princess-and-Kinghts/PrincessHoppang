@@ -14,12 +14,11 @@ public class GameMessage {
     }
 
     @Builder
-    public GameMessage(MessageType type, String roomId, Long userId, String nickname, String message, Object data) {
+    public GameMessage(MessageType type, String roomId, String sender, Long userId, Object data) {
         this.type = type;
         this.roomId = roomId;
+        this.sender = sender;
         this.userId = userId;
-        this.nickname = nickname;
-        this.message = message;
         this.data = data;
     }
 
@@ -29,17 +28,15 @@ public class GameMessage {
     }
     private MessageType type; // 메시지 타입
     private String roomId; // 방번호
+    private String sender;
     private Long userId; // 메시지 보낸사람 userId
-    private String nickname; // 메시지 보낸사람 닉네임
-    private String message; // 메시지
     private Object data;
-//    private long userCount; // 채팅방 인원수, 채팅방 내에서 메시지가 전달될때 인원수 갱신시 사용
-//    private String imgUrl;
+
 
 
     @Override
     public String toString() {
-        return "ChatMessage [type=" + type + ", roomId=" + roomId + ", userId=" + userId + ", message=" + message
+        return "ChatMessage [type=" + type + ", roomId=" + roomId + ", sender=" + sender +", userId=" + userId
                 + ", data=" + data + "]";
     }
 
