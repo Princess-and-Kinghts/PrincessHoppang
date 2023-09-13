@@ -1,14 +1,17 @@
 package princessandknights.princesshoppang.community.service;
 
-import com.amazonaws.services.s3.model.MultipartUpload;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import princessandknights.princesshoppang.community.config.S3Uploader;
+import princessandknights.princesshoppang.community.dto.CommentDto;
 import princessandknights.princesshoppang.community.dto.PostDto;
+import princessandknights.princesshoppang.community.dto.PostListDto;
+import princessandknights.princesshoppang.community.entity.Comment;
 import princessandknights.princesshoppang.community.entity.Post;
 import princessandknights.princesshoppang.community.entity.PostFile;
+import princessandknights.princesshoppang.community.repository.CommentRepository;
 import princessandknights.princesshoppang.community.repository.EmotionRepository;
 import princessandknights.princesshoppang.community.repository.PostFileRepository;
 import princessandknights.princesshoppang.community.repository.PostRepository;
@@ -25,6 +28,7 @@ public class PostService {
     private final EmotionRepository emotionRepository;
     private final PostFileRepository postFileRepository;
     private final S3Uploader s3Uploader;
+    private final CommentRepository commentRepository;
 
     // Create
 
@@ -33,6 +37,8 @@ public class PostService {
 
         if(file.isEmpty() || file.getSize() == 0){
             Post post = Post.toSaveEntity(postDto);
+            postRepository.save(post);
+            post.randomAnonymousNum();
             postRepository.save(post);
 
         } else {
@@ -48,6 +54,9 @@ public class PostService {
 
                 PostFile newPostfile = PostFile.toPostFileEntity(tempPost, originalFilename, imageUrl);
                 postFileRepository.save(newPostfile);
+                post.randomAnonymousNum();
+                postFileRepository.save(newPostfile);
+
             }
 
         }
@@ -56,16 +65,15 @@ public class PostService {
 
     // List
     @Transactional
-    public List<PostDto> getAllPosts() {
+    public List<PostListDto> getAllPosts() {
         // repository는 기본적으로 엔티티로 넘어옴
         List<Post> postList = postRepository.findAll();
         // Dto로 바꿔야함
-        List<PostDto> postDtoList = new ArrayList<>();
+        List<PostListDto> postDtoList = new ArrayList<>();
         for (Post post: postList) {
-
-            int commentCount = post.getCommentList().size();
+            List<Comment> commentList = commentRepository.findAllByPost_PostId(post.getPostId());
             int emotionCount = emotionRepository.countEmotionsByPost(post).intValue();
-            postDtoList.add(PostDto.toPostDto(post, commentCount, emotionCount));
+            postDtoList.add(PostListDto.toPostListDto(post, commentList, emotionCount));
         }
         return postDtoList;
     }
@@ -77,17 +85,12 @@ public class PostService {
     }
 
     @Transactional
-    public PostDto findById(Long id) {
+    public PostDto findById(Long id, List<CommentDto> commentDtoList) {
         Optional<Post> optionalPost = postRepository.findById(id);
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
-            int commentCount = 0;
-
-            if (post.getCommentList() != null) {
-                commentCount = post.getCommentList().size();
-            }
             int emotionCount = emotionRepository.countEmotionsByPost(post).intValue();
-            PostDto postDto = PostDto.toPostDto(post, commentCount, emotionCount);
+            PostDto postDto = PostDto.toPostDto(post, commentDtoList, emotionCount);
             return postDto;
 
         } else {
@@ -95,10 +98,9 @@ public class PostService {
         }
     }
 
-
     // update(PostDto는 새로 들어온 정보), update 보류
     @Transactional
-    public PostDto updatePost(Long id, PostDto postDto) throws IOException {
+    public PostDto updatePost(Long id, PostDto postDto, List<CommentDto> commentDtoList) throws IOException {
 
         Optional<Post> optionalPost = postRepository.findById(id);
         if (optionalPost.isPresent()) {
@@ -131,11 +133,8 @@ public class PostService {
 
             Post.toUpdateEntity(post, postDto);
             postRepository.save(post);
-
-            int commentCount = post.getCommentList().size();
             int emotionCount = emotionRepository.countEmotionsByPost(post).intValue();
-
-            PostDto updatedPostDto = PostDto.toPostDto(post, commentCount, emotionCount);
+            PostDto updatedPostDto = PostDto.toPostDto(post, commentDtoList, emotionCount);
             return updatedPostDto;
         } else {
             return null;
@@ -205,32 +204,24 @@ public class PostService {
         }
     }
 
-    public void delete(Long id) {
+    @Transactional
+    public void deletePost(Long id) {
         // 게시물을 먼저 조회
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다: " + id));
-
+//        List<PostFile> postFiles = post.getPostFileList();
+//
+//        for (PostFile postFile : postFiles) {
+//            String imageUrl = postFile.getImageUrl();
+//            String originalName = postFile.getOriginalFileName();
+//
+//            if (imageUrl != null) {
+//                s3Uploader.deleteS3(imageUrl, originalName);
+//            }
         // 연관된 S3 파일을 삭제
-        List<PostFile> postFiles = post.getPostFileList();
-
-        for (PostFile postFile : postFiles) {
-            String imageUrl = postFile.getImageUrl();
-            String originalName = postFile.getOriginalFileName();
-
-            if (imageUrl != null) {
-                s3Uploader.deleteS3(imageUrl, originalName);
-            }
-            // db 삭제
-            postRepository.deleteById(id);
-
-            // 삭제 후 해당 게시물을 조회하여 존재하는지 확인
-            boolean isDeleted = !postRepository.existsById(id);
-            if (!isDeleted) {
-                throw new RuntimeException("게시물 " + id + " 삭제에 실패하였습니다.");
-
-            }
-        }
-
+        deleteAllFiles(post);
+        // db 삭제
+        postRepository.delete(post);
     }
 
 }

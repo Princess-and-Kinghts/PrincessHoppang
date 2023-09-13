@@ -87,14 +87,16 @@ public class Post {
                 .fileAttached(0)
                 .build();
 
-        post.randomAnonymousNum();
+
         return post;
     }
 
 
-    @PrePersist
+//    @PrePersist
     public void randomAnonymousNum() {
-        Random random = new Random();
+        String seed = getUser().getUserId().toString() + postId.toString();
+        long seedHash = seed.hashCode();
+        Random random = new Random(seedHash);
         // (10000~99999)
         this.anonymousNum = random.nextInt(90000) + 10000;
     }
@@ -140,7 +142,7 @@ public class Post {
                 .fileAttached(1)
                 .build();
 
-        post.randomAnonymousNum();
+//        post.randomAnonymousNum();
         return post;
     }
 

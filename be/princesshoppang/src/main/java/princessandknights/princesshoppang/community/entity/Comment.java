@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
+import princessandknights.princesshoppang.community.dto.CommentDto;
 import princessandknights.princesshoppang.user.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 @Slf4j
@@ -22,7 +24,6 @@ public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long commentId;
 
     @Column(nullable = false)
@@ -34,7 +35,7 @@ public class Comment {
 
 
     @Column(nullable = false)
-    private int anonymous_num;
+    private int anonymousNum;
 
     // 게시글 아이디
     @ManyToOne(fetch = FetchType.LAZY)
@@ -48,7 +49,36 @@ public class Comment {
 
 
     @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
-    private List<Reply> replyList= new ArrayList<>();
+    private List<Reply> replyList = new ArrayList<>();
 
 
+    public static Comment toSaveEntity(CommentDto commentDto, Post post) {
+
+
+        User user = User.builder()
+                .userId(commentDto.getUserId())
+                .build();
+
+        Comment comment = Comment.builder()
+                .content(commentDto.getContent())
+                .user(user)
+                .post(post)
+                .build();
+
+        comment.randomAnonymousNumForComment();
+        return comment;
+    }
+    @PrePersist
+    public void randomAnonymousNumForComment() {
+        String seed = getUser().getUserId().toString() + getPost().getPostId().toString();
+        long seedHash = seed.hashCode();
+        Random random = new Random(seedHash);
+        // (10000~99999)
+        this.anonymousNum = random.nextInt(90000) + 10000;
+    }
+
+    public static Comment toUpdateEntity(Comment comment, CommentDto commentDto) {
+        comment.setContent(commentDto.getContent());
+        return comment;
+    }
 }

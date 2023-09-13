@@ -41,8 +41,10 @@ public class PostDto {
     // 파일 첨부 여부(1/0)
     private int fileAttached;
 
+    private List<CommentDto> commentList;
 
-    public static PostDto toPostDto(Post post, int commentCount, int emotionCount) {
+
+    public static PostDto toPostDto(Post post, List<CommentDto> commentList, int emotionCount) {
         PostDto postDto = new PostDto();
         postDto.setPostId(post.getPostId());
         postDto.setTitle(post.getTitle());
@@ -54,8 +56,9 @@ public class PostDto {
         postDto.setViewCount(post.getViewCount());
         postDto.setMbtiId(post.getUser().getMbti());
         postDto.setEmotionCount(emotionCount);
-        postDto.setCommentCount(commentCount);
+        postDto.setCommentCount(commentList.size());
 
+        postDto.setCommentList(commentList);
 
         // file 관련 필요한 값은 originalname과 imageUrl, 그리고 실제로 잘쓰이는건 ImageUrl
         if (post.getFileAttached() == 0 && post.getPostFileList().isEmpty()){
@@ -68,11 +71,12 @@ public class PostDto {
 
             for (PostFile postFile :post.getPostFileList()) {
                 originalFileNameList.add(postFile.getOriginalFileName());
-                imageUrlList.add(postFile.getImageUrl());//
+                imageUrlList.add(postFile.getImageUrl());
             }
 
             postDto.setOriginalFileName(originalFileNameList);
             postDto.setImageUrl(imageUrlList);
+
         }
         return postDto;
     }

@@ -1,11 +1,21 @@
 package princessandknights.princesshoppang.community.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
+import princessandknights.princesshoppang.community.dto.ReplyDto;
 import princessandknights.princesshoppang.user.entity.User;
 
 import java.time.LocalDateTime;
+import java.util.Random;
 
+@Slf4j
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class Reply {
     @Id
@@ -37,5 +47,38 @@ public class Reply {
     private Comment comment;
 
 
+    public static Reply toSaveEntity(ReplyDto replyDto, Comment comment, Post post) {
+
+        User user = User.builder()
+                .userId(replyDto.getUserId())
+                .build();
+
+
+        Reply reply = Reply.builder()
+                .content(replyDto.getContent())
+                .user(user)
+                .post(post)
+                .comment(comment)
+                .build();
+
+        reply.randomAnonymousNumForReply();
+
+        return reply;
+    }
+
+
+    @PrePersist
+    public void randomAnonymousNumForReply() {
+        String seed = getUser().getUserId().toString() + getPost().getPostId().toString();
+        long seedHash = seed.hashCode();
+        Random random = new Random(seedHash);
+        // (10000~99999)
+        this.anonymousNum = random.nextInt(90000) + 10000;
+    }
+
+    public static Reply toUpdateEntity(Reply reply, ReplyDto replyDto) {
+        reply.setContent(replyDto.getContent());
+        return reply;
+    }
 
 }
