@@ -1,17 +1,37 @@
 package princessandknights.princesshoppang.webSocket.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Setter
 public class Message {
-    private String type;
-    private String channelId;
-    private Long sender;
+
+    public Message() {
+    }
+
+    @Builder
+    public Message(MessageType type, String channelId, String sender, Long userId, Object data, String message) {
+        this.type = type;
+        this.channelId = channelId;
+        this.userId = userId;
+        this.data = data;
+    }
+
+    public enum MessageType {
+        MATCH, MATCHED, ACCEPT, ENTER, START, SUGGESTION, VOTE, VOTED, TALK, QUIT, RESULT, END
+    }
+    private MessageType type; // 메시지 타입
+    private String channelId; // 방번호
+    private Long userId; // 메시지 보낸사람 userId
     private Object data;
+
+
+    @Override
+    public String toString() {
+        return "ChatMessage [type=" + type + ", channelId=" + channelId + "userId=" + userId
+                + ", data=" + data + "]";
+    }
+
 }
