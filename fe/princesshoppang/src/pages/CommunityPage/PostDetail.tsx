@@ -76,7 +76,7 @@ const EmotionBtn = React.memo(
         <div css={getBtnColor()}>{count}</div>
       </div>
     );
-  }
+  },
 );
 
 const PostDetail = () => {
