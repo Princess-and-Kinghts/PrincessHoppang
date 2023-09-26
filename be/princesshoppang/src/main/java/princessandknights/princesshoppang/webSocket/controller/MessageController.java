@@ -2,6 +2,7 @@ package princessandknights.princesshoppang.webSocket.controller;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import princessandknights.princesshoppang.game.model.ChannelId;
 import princessandknights.princesshoppang.game.model.GameRoom;
 import princessandknights.princesshoppang.game.repository.GameRoomRepository;
 import princessandknights.princesshoppang.game.service.GameService;
@@ -86,7 +87,7 @@ public class MessageController {
                     gameRoomRepository.updateStartTime(channelId);
                     log.info("addPlayerCount에서 7명 모두 수락해서 {}방이 열린다.", channelId);
                     message.setType(Message.MessageType.START);
-                    message.setChannelId("matching");
+//                    message.setChannelId(message.getChannelId());
                     message.setUserId(0L);
                     message.setData(gameRoomRepository.getRoomInfo(channelId));
                 }
@@ -95,6 +96,7 @@ public class MessageController {
              * 각 유저가 게임 입장 알림
              * */
             } else if (Message.MessageType.ENTER.equals(message.getType())) {
+                log.info("ENTER~~~!!!");
                 log.info("{}번 방에 들어온 데이터: {}", message.getChannelId(), message.getData());
 
             /**

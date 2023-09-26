@@ -30,7 +30,7 @@ public class WebSocketChatEventListener {
         if(username != null) {
 
             Message message = new Message();
-            //message.setChannelId("");
+            message.setChannelId("");
 
             messagingTemplate.convertAndSend("/topic/public", message);
         }

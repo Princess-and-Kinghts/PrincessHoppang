@@ -32,7 +32,7 @@ public class GameRoomRepository {
         roomInfo.put(gameRoom.getChannelId(), gameRoom);
         playerCount.put(gameRoom.getChannelId(), 0);
 
-        log.info("게임방을 생성했습니다.");
+        log.info("{}번 게임방을 생성했습니다.", gameRoom.getChannelId());
 
         return gameRoom;
     }

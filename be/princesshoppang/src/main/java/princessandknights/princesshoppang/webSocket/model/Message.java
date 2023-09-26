@@ -12,7 +12,7 @@ public class Message {
     }
 
     @Builder
-    public Message(MessageType type, String channelId, String sender, Long userId, Object data, String message) {
+    public Message(MessageType type, String channelId, Long userId, Object data, String message) {
         this.type = type;
         this.channelId = channelId;
         this.userId = userId;
