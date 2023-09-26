@@ -1,93 +1,122 @@
 import { useEffect, useState } from "react";
 import Colors from "../../styles/Colors";
 import { css } from "@emotion/react";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 
-import InputBox from "../../components/InputBox";
+import {useWebSocket} from "../../utils/WebSocketContext";
+import { myColorAtom, myNicknameAtom } from "../../store/GameState";
+import { GameChat } from "../../types/ChatTypes";
 import TheirChat from "../../components/TheirChat";
 import MyChat from "../../components/MyChat";
-import { useWebSocket } from "../../utils/websocket/WebSocketProvider";
-import { me } from "../../store/GameState";
-import { GameChat } from "../../types/ChatTypes";
+import InputBox from "../../components/InputBox";
+import { useParams } from "react-router-dom";
+
 
 const GameChat = () => {
+  const {channelId} = useParams();
+
+  const {SUBSCRIBE, PUBLISH } = useWebSocket();
+
+  // const userId = useAtomValue(userIdAtom);
+  const myNickname = useAtomValue(myNicknameAtom);
+  const myColor = useAtomValue(myColorAtom);
+
+  const [messages, setMessages] = useState<GameChat[]>([]); 
+
+  useEffect(() =>{
+    console.log(channelId);
+    console.log(myColor);
+    subscribe();
+    publish();
+  },[]);
+  
+  const publish = () => {
+    console.log("publish")
     
-    const [messages, setMessages] = useState<GameChat[]>([]); 
-    const [themeColor,setThemeColor] = useAtom(me);
+    PUBLISH(
+      "/pub/game",
+      JSON.stringify({
+        type: 'ENTER',
+        channelId,
+        userId: 1,
+        data: {},
+      }),
+    );
 
-    const testColor = () => {
-      // 익명 호빵에 맞추어 테마색 결정
-      // 나중에는 이부분 websocket에서 가져오는 걸로 바꾸어주어야함
-      setThemeColor(themeColor+1);
-      console.log(themeColor)
-    }
+  };
 
-    // webSocket 사용
-    let stompClient = useWebSocket();
+  const subscribe = () => {
+    SUBSCRIBE(`/topic/${channelId}`, onMessageReceived)
+    console.log("subscribe")
+  };
 
-    var header = { "AUTH": "test user" };
-
-    var body = JSON.stringify({
-      type: "TALK",
-      roomId: "0fc97f82-46eb-4772-975b-ecb7a82038e2",
-      sender: "nickname",
-      message: "message",
-      data: ""
-    });
-
-    useEffect(() => {
-      if (stompClient) {  
-        console.log("스톰프 클라이언트", stompClient)
-        subscribeTopic();
+  // 구독한 곳에서 매세지가 왔을 때
+  const onMessageReceived = (message: StompJs.Message) => {
+    const messageBody = JSON.parse(message.body) as MessageBody;
+    console.log(messageBody);
+    if (messages.length > 0){
+      const lastMessage: GameChat = messages[messages.length -1];
+      console.log("lastMessage: ", messages[messages.length -1]);
   
+      if(lastMessage.nickname === messageBody.data.nickname && messageBody.data.sentAt - lastMessage.sentAt <= 60 * 1000) {
+        lastMessage.messages.push(messageBody.data.message);
+        setMessages((prevMessages) => [...prevMessages.slice(0, -1), lastMessage]);
       } else {
-          console.log("스톰프 클라이언트 not connected", stompClient)
-  
-          stompClient?.connect(header, function (frame: any) {
-            console.log("소켓 연결 성공", frame)
-            subscribeTopic();
-          })
+        setMessages(prevMessages => [...prevMessages, newMessage(messageBody.type, messageBody.data.nickname, messageBody.data.message, messageBody.data.sentAt)]);
       }
-     
-    }, []);
-  
-    const subscribeTopic = () => {
-      console.log("구독")
-      stompClient?.subscribe("/sub/chat/room/0fc97f82-46eb-4772-975b-ecb7a82038e2", function (message) {
-        const msg = JSON.parse(message.body)
-        const newMessage : GameChat = {nickname: "바보", message: msg.message}
-        setMessages(prevMessages => [...prevMessages, newMessage]);
-
-        console.log(msg.sender, "로 부터 새로운 메시지 도착: ", msg.message);      
-      
-      }, header)
+    } else {
+      setMessages(prevMessages => [...prevMessages, newMessage(messageBody.type, messageBody.data.nickname, messageBody.data.message, messageBody.data.sentAt)]);
     }
+  }
+  
+    console.log(messages)
+  // 메세지 생성
+  const newMessage = (type: string, nickname: string, message: string, sentAt: number) => {
+    const gameChat : GameChat = {type, nickname, messages: [message], sentAt}
+    return gameChat;
+  }
+    
 
     return (
-      <div css={themeLight({themeColor})}>
         <div css={gameChatWidth}>
-          {/* <h1 css>GameChat</h1> */}
-          <TheirChat
-            type="game"
-            color="red"
-            messages={messages}
-          />
-          <MyChat
-            color="red"
-            messages={messages}
-          />
+          {
+            messages.map((message) => {
+              // 일반 채팅인데
+              if (message.type == "TALK"){
+                // 내가 보냈을 때
+                if(message.nickname == myNickname) {
+                  return (
+                    <MyChat
+                      color={myColor}
+                      message={message}
+                    />
+                  )
+                // 남이 보냈을 때
+                } else {
+                  return (
+                    <TheirChat
+                      type="game"
+                      color={myColor}
+                      message={message}
+                    />
+                  )
+                }
+              }
+            })
+          }
+         
           <InputBox
             type="game"
-            color="red"
+            color={myColor}
           ></InputBox>
-          <button type="button" onClick={() =>{testColor()}}>색깔</button>
         </div>
-      </div>
+      // </div>
     );
   };
   
   export default GameChat;
  
+
   const gameChatWidth= css`
     width: 60vw;
 
@@ -95,23 +124,4 @@ const GameChat = () => {
       width: 100vw;
     }
   `
-  const themeLight = (props: { themeColor: number; }) => css`
-    display: flex;
-    justify-content: center;
-    height: calc(100vh - 100px);
-    background-color: ${props.themeColor === 1
-      ? Colors.red.light
-      : props.themeColor === 2
-      ? Colors.orange.light
-      : props.themeColor === 3
-      ? Colors.yellow.light
-      : props.themeColor === 4
-      ? Colors.green.light
-      : props.themeColor === 5
-      ? Colors.blue.light
-      : props.themeColor === 6
-      ? Colors.navy.light
-      : props.themeColor === 7
-      ? Colors.purple.light
-      : "none"};
-  `;
+  

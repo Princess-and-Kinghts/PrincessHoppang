@@ -1,117 +1,66 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-// import Stomp from "webstomp-client";
-import Stomp from "stompjs";
-import SockJS from "sockjs-client";
-import { useAtom } from "jotai";
-import { webSocketConnectionState } from "../../store/store";
-import { useWebSocket } from "../../utils/websocket/WebSocketProvider";
-import Button from "../../components/Button";
+import { useRef } from 'react';
+import { useParams } from 'react-router-dom';
+import * as StompJs from '@stomp/stompjs';
+import { useWebSocket } from '../../utils/WebSocketContext';
 
-// import API from "../../utils/API";
 
 
 const Chat = () => {
+  const { userId } = useParams<{ userId: string }>();
+  const {CONNECT, DISCONNECT, SUBSCRIBE, PUBLISH } = useWebSocket();
 
-  const [nickname, setNickname] = useState("");
 
-  const nicknameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    setNickname(event.target.value);
-  }
   
-  const [message, setmessage] = useState("");
-  
-  const messageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    setmessage(event.target.value);
+  const onMessageReceived = (message: StompJs.Message) => {
+    // 이게 백에서 설정한 Messge model
+    const messageBody = JSON.parse(message.body) as MessageBody;
+    console.log(messageBody);
   };
-  
-  const [chat, setChat] = useState("")
 
-  // websocket 통신
+  // const subscribeAfterGetRoomId = (id: number) => {
+  //   client.current.subscribe(`/sub/chat/match/${id}`, onMessageReceived);
+  // };
 
-  var header = { "AUTH": "test user" };
+  const publish = () => {
+    console.log("publish")
 
-  var body = JSON.stringify({
-    type: "TALK",
-    roomId: "0fc97f82-46eb-4772-975b-ecb7a82038e2",
-    sender: nickname,
-    message: message,
-    data: ""
-  });
+    PUBLISH(
+      "/pub/game",
+      JSON.stringify({
+        type: 'TALK',
+        channelId: "chaen",
+        userId: "2",
+        data: "데이터 없음???",
+      }),
+    );
 
-  // let socket = new SockJS("http://127.0.0.1:8081/ws-stomp/");
-  // let stompClient = Stomp.over(socket);
-  let stompClient = useWebSocket();
+  };
 
 
-  useEffect(() => {
-    if (stompClient) {  
-      console.log("스톰프 클라이언트", stompClient)
-      subscribeTopic();
 
-    } else {
-        console.log("스톰프 클라이언트 not connected", stompClient)
+  const subscribe = () => {
+    SUBSCRIBE("/topic/chaen", onMessageReceived)
+    console.log("subscribe")
+  };
 
-        stompClient.connect(header, function (frame: any) {
-          console.log("소켓 연결 성공", frame)
-          subscribeTopic();
-        })
-    }
-   
-  }, []);
-
-  const subscribeTopic = () => {
-    console.log("구독")
-    stompClient.subscribe("/sub/chat/room/0fc97f82-46eb-4772-975b-ecb7a82038e2", function (message) {
-      const msg = JSON.parse(message.body)
-      console.log(msg.sender, "로 부터 새로운 메시지 도착: ", msg.message);
-      setChat(msg.message);
-    }, header)
-  }
-
-  const disconnect = () => {
-    console.log("구독 해제")
-    stompClient.disconnect(() => {
-      console.log("disconnect 함수 안")
-    }, header);
-    // ("/sub/chat/room/0fc97f82-46eb-4772-975b-ecb7a82038e2",header);
-    // ("/sub/chat/room/0fc97f82-46eb-4772-975b-ecb7a82038e2", function (message) {
-    //   const msg = JSON.parse(message.body)
-    //   console.log(msg.sender, "로 부터 새로운 메시지 도착: ", msg.message);
-    //   setChat(msg.message);
-    // }, header)
-  }
-  
-
-  function sendMessage(event: FormEvent<HTMLFormElement>): void {
-    event.preventDefault();
-    stompClient.send("/pub/game", header, body)
-    console.log("msg: ", message)
-  }
  
+
+  
+
+    
+
+
 
   return (
     <div>
-      <h1>Chat</h1>
-      <div>
-        <div>{chat}</div>
-      </div>
-      <form action="submit" onSubmit={sendMessage}>
-        <input 
-          type="text" 
-          onChange={nicknameChangeHandler}
-        />
-        <br />
-        <input
-          type="text"
-          onChange={messageChangeHandler}
-        />
-        <button type="submit" >전송</button>
-      </form>
-      <button onClick={() => {subscribeTopic()}}>구독</button>
-      <button onClick={() => {disconnect()}}>구독 해제</button>
-      
+      <button onClick={CONNECT}>connect</button>
+      <br />
+      <button onClick={() => {subscribe()}}>subscribe</button>
+      <br />
+      <button onClick={() => {publish()}}>publish</button>
+      <br />
+      <button onClick={DISCONNECT}>disconnect</button>
     </div>
   );
 };
-
 export default Chat;

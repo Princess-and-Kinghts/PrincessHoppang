@@ -4,37 +4,30 @@ import { myChatStyles } from "../styles/MyChatStyles";
 import { GameChat } from "../types/ChatTypes";
 
 type MyChatProps = {
-    messages?: GameChat[];
-    color: "red" | "orange" | "yellow" | "green" | "blue" | "navy" | "purple";
+    message?: GameChat;
+    color: "RED" | "ORANGE" | "YELLOW" | "GREEN" | "BLUE" | "NAVY" | "PURPLE";
     sentAt?: String;
 };
 
 const MyChat = ({
-    messages,
+    message,
     color,
     sentAt
 }: MyChatProps) => {
 
   return (
     <div css={myChatStyles["outerContainer"]}>
-
-        
-            {/* 메세지 */}
-                {messages?.map((item, idx) => (
-                    <>
-                        <div
-                            css={myChatStyles["red"]}
-                            key={idx}
-                        >
-                            {item.message}
-                        </div>
-                    </>
-                ))}
-            
-
-            {/* 보낸 시간 */}
-            <p>{sentAt}</p>
-        </div>
+        {
+            message?.messages.map((item, idx) => (
+                <div
+                    css={myChatStyles[color]}
+                    key={idx}
+                >
+                    {item}
+                </div>
+            ))
+        }
+    </div>
 
     
   );

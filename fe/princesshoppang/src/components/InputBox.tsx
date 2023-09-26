@@ -1,15 +1,16 @@
 import { FormEvent, useState } from "react";
 import inputboxStyles from "../styles/InputBoxStyles";
 import vote from "../assets/game/vote.png";
-import { useWebSocket } from "../utils/websocket/WebSocketProvider";
+import {useWebSocket}  from "../utils/WebSocketContext";
 import { useAtom, useAtomValue } from "jotai";
-import { headerAtom } from "../store/WebSocketState";
-import { me } from "../store/GameState";
-import { send } from "vite";
+import { useParams } from "react-router-dom";
+import { userIdAtom } from "../store/UserState";
+import { myNicknameAtom } from "../store/GameState";
+import { GameChat, GameChatRequest } from "../types/ChatTypes";
 
 type InputBoxProps = {
     type: "game" | "chat";
-    color: "deactivated" | "red" | "orange" | "yellow" | "green" | "blue" | "navy" | "purple";
+    color: "deactivated" | "RED" | "ORANGE" | "YELLOW" | "GREEN" | "BLUE" | "NAVY" | "PURPLE";
 };
 
 const InputBox = ({
@@ -17,30 +18,43 @@ const InputBox = ({
   color,
 }: InputBoxProps) => {
 
+  const {channelId} = useParams();
+
+  const { PUBLISH } = useWebSocket();
+
+  const userId = useAtomValue(userIdAtom);
+  const myNickname = useAtomValue(myNicknameAtom);
+
   const [message, setMessage] = useState("");
+
+
+  // 메세지 생성
+  const newMessage = (message: string ) => {
+    const gameChat : GameChatRequest = {nickname: myNickname, message, sentAt: Date.now()}
+    return gameChat;
+  }
+
+  
+  async function sendMessage() {
+    var body = JSON.stringify({
+      type: "TALK",
+      channelId,
+      userId: 2,
+      data: newMessage(message)
+    });
+
+    PUBLISH("/pub/game", body)
+
+    console.log("msg: ", message)
+  }
+
 
   const submitHandler = (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     sendMessage();
     setMessage("")
   }
-  
-  let stompClient = useWebSocket();
-  
-  const header = useAtomValue(headerAtom);
 
-  var body = JSON.stringify({
-    type: "TALK",
-    roomId: "0fc97f82-46eb-4772-975b-ecb7a82038e2",
-    sender: "nickname",
-    message: message,
-    data: ""
-  });
-
-  async function sendMessage() {
-    await stompClient?.send("/pub/game", header, body)
-    console.log("msg: ", message)
-  }
 
   return (
     // <button css={buttonStyles[shapeType]} type={type}>

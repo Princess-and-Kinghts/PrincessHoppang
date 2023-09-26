@@ -71,12 +71,12 @@ export const inputBoxStyles = {
       height: 2rem;
       border-radius: 10px;
       font-size: ${Fonts.fontsize.h5};
-
     }
   `,
 
   // 테마별 색깔 버튼
-  red: css`
+  RED: css`
+    
     width: 62px;
     height: 47px;
     margin-right: 10px;
@@ -99,10 +99,9 @@ export const inputBoxStyles = {
       height: 2rem;
       border-radius: 10px;
       font-size: ${Fonts.fontsize.h5};
-
     }
   `,
-  orange: css`
+  ORANGE: css`
     width: 62px;
     height: 47px;
     margin-right: 10px;
@@ -120,8 +119,14 @@ export const inputBoxStyles = {
     transition:
       background-color 0.2s ease,
       color 0.1s ease;
+    // 앱
+    @media (max-width: 767px) {
+      height: 2rem;
+      border-radius: 10px;
+      font-size: ${Fonts.fontsize.h5};
+    }
   `,
-  yellow: css`
+  YELLOW: css`
     width: 62px;
     height: 47px;
     margin-right: 10px;
@@ -139,8 +144,14 @@ export const inputBoxStyles = {
     transition:
       background-color 0.2s ease,
       color 0.1s ease;
+    // 앱
+    @media (max-width: 767px) {
+      height: 2rem;
+      border-radius: 10px;
+      font-size: ${Fonts.fontsize.h5};
+    }
   `,
-  green: css`
+  GREEN: css`
     width: 62px;
     height: 47px;
     margin-right: 10px;
@@ -158,8 +169,14 @@ export const inputBoxStyles = {
     transition:
       background-color 0.2s ease,
       color 0.1s ease;
+    // 앱
+    @media (max-width: 767px) {
+      height: 2rem;
+      border-radius: 10px;
+      font-size: ${Fonts.fontsize.h5};
+    }
   `,
-  blue: css`
+  BLUE: css`
     width: 62px;
     height: 47px;
     margin-right: 10px;
@@ -177,8 +194,14 @@ export const inputBoxStyles = {
     transition:
       background-color 0.2s ease,
       color 0.1s ease;
+    // 앱
+    @media (max-width: 767px) {
+      height: 2rem;
+      border-radius: 10px;
+      font-size: ${Fonts.fontsize.h5};
+    }
   `,
-  navy: css`
+  NAVY: css`
     width: 62px;
     height: 47px;
     margin-right: 10px;
@@ -196,8 +219,14 @@ export const inputBoxStyles = {
     transition:
       background-color 0.2s ease,
       color 0.1s ease;
+    // 앱
+    @media (max-width: 767px) {
+      height: 2rem;
+      border-radius: 10px;
+      font-size: ${Fonts.fontsize.h5};
+    }
   `,
-  purple: css`
+  PURPLE: css`
     width: 62px;
     height: 47px;
     margin-right: 10px;
@@ -215,6 +244,12 @@ export const inputBoxStyles = {
     transition:
       background-color 0.2s ease,
       color 0.1s ease;
+    // 앱
+    @media (max-width: 767px) {
+      height: 2rem;
+      border-radius: 10px;
+      font-size: ${Fonts.fontsize.h5};
+    }
   `,
   
 };
